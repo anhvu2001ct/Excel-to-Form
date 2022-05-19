@@ -19,7 +19,7 @@ namespace E2F_Server.Controllers
                 var startCol = data.GetProperty("startCol").GetString()!;
                 var endCol = data.GetProperty("endCol").GetString()!;
 
-                string filePath = $@"{Program.RootPath}Data\{sheetId}";
+                string filePath = Path.Combine(Program.RootPath, "Data", sheetId);
 
                 if (!Util.DataExists(sheetId)) return BadRequest(new
                 {
@@ -55,7 +55,7 @@ namespace E2F_Server.Controllers
             {
                 var workbook = data.GetObject<Workbook>()!;
                 var url = await Util.Upload(workbook.Id, workbook.Name);
-                await Util.WriteData($"workbook/{workbook.Name}.json", new Uploader<Workbook>
+                await Util.WriteData(Path.Combine("workbook", $"{workbook.Name}.json"), new Uploader<Workbook>
                 {
                     Url = url,
                     Data = workbook

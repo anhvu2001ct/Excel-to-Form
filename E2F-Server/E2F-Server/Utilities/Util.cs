@@ -15,12 +15,12 @@ namespace E2F_Server.Utilities
 
         public static bool DataExists(string name)
         {
-            return File.Exists($@"{Program.RootPath}Data\{name}");
+            return File.Exists(Path.Combine(Program.RootPath, "Data", name));
         }
 
         public static async Task WriteData(string path, object value)
         {
-            path = $@"{Program.RootPath}Data\{path}";
+            path = Path.Combine(Program.RootPath, "Data", path);
             using (var file = File.Create(path))
             {
                 await JsonSerializer.SerializeAsync(file, value);
@@ -29,7 +29,7 @@ namespace E2F_Server.Utilities
 
         public static void DeleteData(string path)
         {
-            path = $@"{Program.RootPath}Data\{path}";
+            path = Path.Combine(Program.RootPath, "Data", path);
             File.Delete(path);
         }
 
@@ -42,7 +42,7 @@ namespace E2F_Server.Utilities
 
         public static async Task<string> Upload(string path, string name)
         {
-            path = $@"{Program.RootPath}Data\{path}";
+            path = Path.Combine(Program.RootPath, "Data", path);
             using (var file = File.OpenRead(path))
             {
                 var fileBytes = await ToBytes(file);

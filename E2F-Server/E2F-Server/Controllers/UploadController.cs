@@ -20,7 +20,7 @@ namespace E2F_Server.Controllers
             return Ok(new
             {
                 success = true,
-                fileUrl = res
+                message = res
             });
         }
 
@@ -39,7 +39,7 @@ namespace E2F_Server.Controllers
             return Ok(new
             {
                 success = true,
-                fileUrl = res
+                message = res
             });
         }
     }

@@ -13,7 +13,7 @@ namespace E2F_Server.Utilities
                 Name = file.FileName
             };
 
-            string filePath = $@"{Program.RootPath}Data\{res.Id}";
+            string filePath = Path.Combine(Program.RootPath, "Data", res.Id);
             using var orgStream = file.OpenReadStream();
 
             using (var fileStream = File.Create(filePath))
