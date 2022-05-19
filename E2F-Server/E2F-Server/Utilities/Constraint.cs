@@ -11,7 +11,7 @@
 
         public static string GetExtErrorMsg(string[] ext)
         {
-            return $"Only support file types of [{string.Join(", ", ext)}]";
+            return $"Only support file of types [{string.Join(", ", ext)}]";
         }
     }
 }
