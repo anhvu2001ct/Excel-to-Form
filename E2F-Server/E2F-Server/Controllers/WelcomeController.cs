@@ -7,6 +7,7 @@ namespace E2F_Server.Controllers
         [HttpGet]
         public ActionResult<object> Get()
         {
+
             return new
             {
                 greeting = "Welcome to MUZIC App API Server",
