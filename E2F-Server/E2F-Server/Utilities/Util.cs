@@ -1,16 +1,20 @@
-﻿using System.Text.Json;
+﻿using E2F_Server.Model;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Text.Json;
 
 namespace E2F_Server.Utilities
 {
     public static class Util
     {
-        private static JsonSerializerOptions _options = new()
+        private static JsonSerializerOptions jsonOptions = new()
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+
         public static T GetObject<T>(this JsonElement json)
         {
-            return json.Deserialize<T>(_options)!;
+            return json.Deserialize<T>(jsonOptions)!;
         }
 
         public static bool DataExists(string name)
@@ -23,7 +27,7 @@ namespace E2F_Server.Utilities
             path = Path.Combine(Program.RootPath, "Data", path);
             using (var file = File.Create(path))
             {
-                await JsonSerializer.SerializeAsync(file, value);
+                await JsonSerializer.SerializeAsync(file, value, jsonOptions);
             }
         }
 
@@ -33,22 +37,21 @@ namespace E2F_Server.Utilities
             File.Delete(path);
         }
 
+        public static async Task<T?> ReadData<T>(string path)
+        {
+            path = Path.Combine(Program.RootPath, "Data", path);
+            using (var file = File.OpenRead(path))
+            {
+                var data = await JsonSerializer.DeserializeAsync<T>(file, jsonOptions);
+                return data;
+            }
+        }
+
         public static async Task<string> Upload(IFormFile file)
         {
             var fileBytes = await ToBytes(file.OpenReadStream());
             var res = await Program.Imagekit.Folder("/E2Form/").FileName(file.FileName).UploadAsync(fileBytes);
             return res.URL;
-        }
-
-        public static async Task<string> Upload(string path, string name)
-        {
-            path = Path.Combine(Program.RootPath, "Data", path);
-            using (var file = File.OpenRead(path))
-            {
-                var fileBytes = await ToBytes(file);
-                var res = await Program.Imagekit.Folder("/E2Form/").FileName(name).UploadAsync(fileBytes);
-                return res.URL;
-            }
         }
 
         public static bool IsExtAccepted(string fileName, string[] acceptedExt)
@@ -69,5 +72,12 @@ namespace E2F_Server.Utilities
             }
         }
 
+        private static FileExtensionContentTypeProvider mimeData = new();
+        public static string GetContentType(string? filePath)
+        {
+            if (string.IsNullOrEmpty(filePath)) return "application/octet-stream";
+            if (!mimeData.TryGetContentType(filePath, out string? res)) res = "application/octet-stream";
+            return res;
+        }
     }
 }

@@ -21,6 +21,13 @@ class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
+        builder.Services.AddCors(option =>
+        {
+            option.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            });
+        });
 
         var app = builder.Build();
 
@@ -35,6 +42,7 @@ class Program
         // Configure the HTTP request pipeline.
 
         app.UseAuthorization();
+        app.UseCors();
 
         app.MapControllers();
 

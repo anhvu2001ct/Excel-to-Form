@@ -10,7 +10,7 @@ namespace E2F_Server.Controllers
 
             return new
             {
-                greeting = "Welcome to MUZIC App API Server",
+                greeting = "Welcome to Excel2Form API Server",
                 version = "1.0"
             };
         }

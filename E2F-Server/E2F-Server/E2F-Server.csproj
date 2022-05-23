@@ -12,6 +12,7 @@
     <PackageReference Include="EPPlus" Version="6.0.4" />
     <PackageReference Include="Imagekit" Version="3.1.6" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Nanoid" Version="2.1.0" />
   </ItemGroup>
 
 </Project>
