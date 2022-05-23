@@ -5,72 +5,6 @@ namespace E2F_Server.Utilities
 {
     public static class SheetHelper
     {
-        public static async Task<WorkbookView> GetWorkbookView(Workbook workbook)
-        {
-            var res = new WorkbookView
-            {
-                Id = workbook.Id,
-                Name = workbook.Name,
-                Description = workbook.Description
-            };
-
-            var structure = await Util.ReadData<WorkbookStructure>(Path.Combine("structure", $"{res.Id}.json"));
-            foreach (var item in structure!.Order)
-            {
-                var sheet = structure.Sheets[item];
-                res.Sheets.Add(new WorkbookView.SimpleSheet
-                {
-                    Name = sheet.Name,
-                    Columns = sheet.Columns
-                });
-            }
-
-            return res;
-        }
-
-        public static async Task<WorkbookPreImport?> GetWorkbook(IFormFile file)
-        {
-            var res = new WorkbookPreImport
-            {
-                SheetId = Guid.NewGuid().ToString(),
-                Name = Path.GetFileNameWithoutExtension(file.FileName),
-                Extension = Path.GetExtension(file.FileName)
-            };
-
-            string filePath = Path.Combine(Program.RootPath, "Data", "sheet", res.SheetId);
-            using var orgStream = file.OpenReadStream();
-
-            using (var fileStream = File.Create(filePath))
-            {
-                await orgStream.CopyToAsync(fileStream);
-            }
-
-            try
-            {
-                using (var excel = new ExcelPackage())
-                {
-                    await excel.LoadAsync(filePath);
-                    var sheets = excel.Workbook.Worksheets;
-                    int num = sheets.Count;
-
-                    for (int i = 0; i < num; ++i)
-                    {
-                        var sheet = sheets[i];
-                        if (sheet.Hidden != eWorkSheetHidden.Visible) continue;
-                        res.Sheets.Add(GetSheet(sheet, i));
-                    }
-                }
-            }
-            catch
-            {
-                Util.DeleteData(Path.Combine("sheet", res.SheetId));
-                return null;
-            }
-
-            if (res.Sheets.Count == 0) res = null;
-            return res;
-        }
-
         public static SheetPreImport GetSheet(ExcelWorksheet sheet, int idx)
         {
             var res = new SheetPreImport
@@ -90,7 +24,7 @@ namespace E2F_Server.Utilities
             return res;
         }
 
-        public static SheetCord ValidateSheet(ExcelWorksheet sheet, int rowIndex, string startCol, string endCol)
+        public static SheetCord ValidateSheetCord(ExcelWorksheet sheet, int rowIndex, string startCol, string endCol)
         {
             var res = new SheetPreImport
             {
@@ -125,6 +59,16 @@ namespace E2F_Server.Utilities
             }
 
             if (lastCell != null) data.Cord.ColumnEnd = GetColumnFromAddress(lastCell);
+        }
+
+        public static void UpdateSheetWithData(ExcelWorksheet sheet, SheetCord cord, List<string[]> data)
+        {
+            int firstRow = cord.RowIndex + 1;
+            var range = sheet.Cells[$"{cord.ColumnStart}{firstRow}:{cord.ColumnEnd}{firstRow}"];
+            sheet.InsertRow(firstRow + 1, data.Count - 1);
+            for (int i = 1; i < data.Count; i++)
+                range.Copy(sheet.Cells[$"{cord.ColumnStart}{firstRow + i}"]);
+            range.LoadFromArrays(data);
         }
 
         public static string GetColumnFromAddress(string address)

@@ -21,7 +21,7 @@ namespace E2F_Server.Controllers
                     message = Constraint.GetExtErrorMsg(Constraint.ACCEPT_EXT_SHEET)
                 });
 
-                var res = await SheetHelper.GetWorkbook(file);
+                var res = await WorkbookHelper.GetWorkbookPreImport(file);
                 if (res == null) return BadRequest(new
                 {
                     success = false,
@@ -36,7 +36,7 @@ namespace E2F_Server.Controllers
             }
             catch
             {
-                return BadRequest(new
+                return StatusCode(500, new
                 {
                     success = false,
                     message = "Your request was not successful :("
@@ -73,13 +73,13 @@ namespace E2F_Server.Controllers
                     return Ok(new
                     {
                         success = true,
-                        message = SheetHelper.ValidateSheet(sheet, rowIndex, startCol, endCol)
+                        message = SheetHelper.ValidateSheetCord(sheet, rowIndex, startCol, endCol)
                     });
                 }
             }
             catch
             {
-                return BadRequest(new
+                return StatusCode(500, new
                 {
                     success = false,
                     message = "Your request was not successful :("
@@ -92,11 +92,11 @@ namespace E2F_Server.Controllers
         {
             try
             {
-                var query = SqlHelper.GetInsertIdQuery("Workbook", "Id", "Name", "SheetId", "Description", "Extension");
+                var query = SqlHelper.GetInsertIdQuery("Workbook", "Id", "Name", "WorkbookId", "Description", "Extension");
                 int workbookId = await Program.Sql.ExecuteScalarAsync<int>(query, new
                 {
-                    SheetId = workbook.SheetId,
                     Name = workbook.Name,
+                    WorkbookId = workbook.WorkbookId,
                     Description = workbook.Description,
                     Extension = workbook.Extension
                 });
@@ -106,7 +106,7 @@ namespace E2F_Server.Controllers
 
                 using (var excel = new ExcelPackage())
                 {
-                    string filePath = Path.Combine(Program.RootPath, "Data", "sheet", workbook.SheetId);
+                    string filePath = Path.Combine(Program.RootPath, "Data", "sheet", workbook.WorkbookId);
                     await excel.LoadAsync(filePath);
 
                     var sheets = excel.Workbook.Worksheets;
@@ -133,7 +133,7 @@ namespace E2F_Server.Controllers
             }
             catch
             {
-                return BadRequest(new
+                return StatusCode(500, new
                 {
                     success = false,
                     message = "Your request was not successful :("

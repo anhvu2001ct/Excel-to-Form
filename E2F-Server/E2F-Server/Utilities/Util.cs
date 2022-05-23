@@ -22,7 +22,17 @@ namespace E2F_Server.Utilities
             return File.Exists(Path.Combine(Program.RootPath, "Data", name));
         }
 
-        public static async Task WriteData(string path, object value)
+        public static async Task<T> ReadData<T>(string path)
+        {
+            path = Path.Combine(Program.RootPath, "Data", path);
+            using (var file = File.OpenRead(path))
+            {
+                var data = await JsonSerializer.DeserializeAsync<T>(file, jsonOptions);
+                return data!;
+            }
+        }
+
+        public static async Task WriteData<T>(string path, T value)
         {
             path = Path.Combine(Program.RootPath, "Data", path);
             using (var file = File.Create(path))
@@ -35,16 +45,6 @@ namespace E2F_Server.Utilities
         {
             path = Path.Combine(Program.RootPath, "Data", path);
             File.Delete(path);
-        }
-
-        public static async Task<T?> ReadData<T>(string path)
-        {
-            path = Path.Combine(Program.RootPath, "Data", path);
-            using (var file = File.OpenRead(path))
-            {
-                var data = await JsonSerializer.DeserializeAsync<T>(file, jsonOptions);
-                return data;
-            }
         }
 
         public static async Task<string> Upload(IFormFile file)

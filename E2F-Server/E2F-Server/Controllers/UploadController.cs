@@ -27,7 +27,7 @@ namespace E2F_Server.Controllers
             }
             catch
             {
-                return BadRequest(new
+                return StatusCode(500, new
                 {
                     success = false,
                     message = "Your request was not successful :("

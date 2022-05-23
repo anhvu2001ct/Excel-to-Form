@@ -17,7 +17,7 @@ namespace E2F_Server.Controllers
                 var query = "Select * from Workbook";
                 var li = (await Program.Sql.QueryAsync<Workbook>(query)).ToList();
                 var res = new List<WorkbookView>();
-                foreach (var item in li) res.Add(await SheetHelper.GetWorkbookView(item));
+                foreach (var item in li) res.Add(await WorkbookHelper.GetWorkbookView(item));
                 return Ok(new
                 {
                     status = true,
@@ -35,7 +35,7 @@ namespace E2F_Server.Controllers
         }
 
         [HttpGet("get/single")]
-        public async Task<IActionResult> GetAllWorkbook([FromQuery] string id)
+        public async Task<IActionResult> GetWorkbook([FromQuery] string id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace E2F_Server.Controllers
                 return Ok(new
                 {
                     status = true,
-                    message = await SheetHelper.GetWorkbookView(workbook)
+                    message = await WorkbookHelper.GetWorkbookView(workbook)
                 });
             }
             catch
