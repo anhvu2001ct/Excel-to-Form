@@ -1,5 +1,6 @@
 ﻿using E2F_Server.Model;
 using OfficeOpenXml;
+using System.Data.Common;
 
 namespace E2F_Server.Utilities
 {
@@ -145,6 +146,19 @@ namespace E2F_Server.Utilities
             if (name.EndsWith("date")) return "date";
             if (name.EndsWith("note")) return "area";
             return "text";
+        }
+
+        public static async Task<List<string[]>> ReadData(DbDataReader reader)
+        {
+            int colCount = reader.FieldCount - 1;
+            List<string[]> res = new();
+            while (await reader.ReadAsync())
+            {
+                string[] data = new string[colCount];
+                for (int i = 0; i < data.Length; ++i) data[i] = reader.GetString(i + 1);
+                res.Add(data);
+            }
+            return res;
         }
     }
 }

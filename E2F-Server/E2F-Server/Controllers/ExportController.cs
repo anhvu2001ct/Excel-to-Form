@@ -36,7 +36,7 @@ namespace E2F_Server.Controllers
             {
                 var query = "select Id, Name, WorkbookId, Extension from Workbook where Id=@id";
                 var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { id });
-                var structure = await Util.ReadData<WorkbookStructure>(Path.Combine("structure", $"{workbook.Id}.json"));
+                var structure = await WorkbookHelper.GetStructure(workbook.Id);
                 using (var excel = new ExcelPackage())
                 {
                     var path = Path.Combine(Program.RootPath, "Data", "sheet", workbook.WorkbookId);

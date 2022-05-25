@@ -57,7 +57,7 @@ namespace E2F_Server.Utilities
                 Description = workbook.Description
             };
 
-            var structure = await Util.ReadData<WorkbookStructure>(Path.Combine("structure", $"{res.Id}.json"));
+            var structure = await GetStructure(res.Id);
             foreach (var item in structure!.Order)
             {
                 var sheet = structure.Sheets[item];
@@ -71,19 +71,18 @@ namespace E2F_Server.Utilities
             return res;
         }
 
+        public static Task<WorkbookStructure> GetStructure(int workbookId)
+        {
+            return Util.ReadData<WorkbookStructure>(Path.Combine("structure", $"{workbookId}.json"));
+        }
+
         public static async Task UpdateWorkbookWithData(WorkbookStructure structure, ExcelWorksheets sheets)
         {
-            foreach (var item in structure.Order)
+            foreach (var sheetTblName in structure.Order)
             {
-                var sheet = structure.Sheets[item];
-                var reader = await Program.Sql.ExecuteReaderAsync($"select * from {item}");
-                List<string[]> li = new();
-                while (await reader.ReadAsync())
-                {
-                    string[] data = new string[sheet.Columns.Count];
-                    for (int i = 0; i < data.Length; ++i) data[i] = reader.GetString(i+1);
-                    li.Add(data);
-                }
+                var sheet = structure.Sheets[sheetTblName];
+                var reader = await Program.Sql.ExecuteReaderAsync($"select * from {sheetTblName}");
+                var li = await SheetHelper.ReadData(reader);
                 SheetHelper.UpdateSheetWithData(sheets[sheet.Index], sheet.Cord, li);
             }
         }

@@ -7,5 +7,7 @@
         public string WorkbookId { get; set; } = null!;
         public string? Description { get; set; }
         public string? Extension { get; set; }
+        public string? Url { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
