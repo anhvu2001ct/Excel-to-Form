@@ -9,13 +9,13 @@ namespace E2F_Server.Controllers
 {
     public class SheetController : BaseController
     {
-        public struct SheetQuery
+        public class SheetQuery
         {
             public int WorkbookId { get; set; }
             public int SheetIndex { get; set; }
         }
 
-        public struct SheetSearch
+        public class SheetSearch
         {
             public int WorkbookId { get; set; }
             public int SheetIndex { get; set; }
