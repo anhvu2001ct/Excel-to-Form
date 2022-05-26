@@ -64,7 +64,7 @@ namespace E2F_Server.Controllers
 
                 using (var excel = new ExcelPackage())
                 {
-                    string filePath = Path.Combine(Program.RootPath, "Data", "structure", sheetId);
+                    string filePath = Path.Combine(Program.RootPath, "Data", "sheet", sheetId);
                     await excel.LoadAsync(filePath);
                     var sheet = excel.Workbook.Worksheets[sheetIndex];
 
