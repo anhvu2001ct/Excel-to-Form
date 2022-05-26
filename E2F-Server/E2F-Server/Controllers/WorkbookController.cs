@@ -16,7 +16,6 @@ namespace E2F_Server.Controllers
             {
                 var query = "Select * from Workbook";
                 var li = (await Program.Sql.QueryAsync<Workbook>(query)).ToList();
-                var res = new List<WorkbookView>(li.Count);
                 var tasks = new Task<WorkbookView>[li.Count];
                 for (int i = 0; i < li.Count; ++i) tasks[i] = WorkbookHelper.GetWorkbookView(li[i]);
                 return Ok(new
@@ -61,15 +60,17 @@ namespace E2F_Server.Controllers
         [HttpGet("search/name")]
         public async Task<IActionResult> SearchByName([FromQuery] string name)
         {
-            // Todo: Remove accent
             try
             {
-                var query = "Select * from Workbook where ";
-                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { name });
+                var query = @"Select * from Workbook
+                              where dbo.rmvAccent(Name) like concat(N'%',dbo.rmvAccent(@name),'%')";
+                var li = (await Program.Sql.QueryAsync<Workbook>(query, new { name })).ToList();
+                var tasks = new Task<WorkbookView>[li.Count];
+                for (int i = 0; i < li.Count; ++i) tasks[i] = WorkbookHelper.GetWorkbookView(li[i]);
                 return Ok(new
                 {
                     status = true,
-                    message = await WorkbookHelper.GetWorkbookView(workbook)
+                    message = await Task.WhenAll(tasks)
                 });
             }
             catch

@@ -4,14 +4,14 @@
         public static string GetInsertQuery(string table, params string[] props)
         {
             string keys = string.Join(", ", props);
-            string values = $"@{string.Join(", @", props)}";
+            string values = string.Join(", ", props.Select(p => $"@{p}"));
             return $"insert into {table}({keys}) values({values})";
         }
 
         public static string GetInsertIdQuery(string table, string tableId, params string[] props)
         {
             string keys = string.Join(", ", props);
-            string values = $"@{string.Join(", @", props)}";
+            string values = string.Join(", ", props.Select(p => $"@{p}"));
             return $"insert into {table}({keys}) output [inserted].{tableId} values({values})";
         }
 
@@ -32,5 +32,7 @@
         {
             return $"t{prefixId}_{await Nanoid.Nanoid.GenerateAsync(Constraint.NANOID_ALLOWED_STR, Constraint.NANOID_LENGTH)}";
         }
+
+
     }
 }
