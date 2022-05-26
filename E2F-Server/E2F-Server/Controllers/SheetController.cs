@@ -92,7 +92,6 @@ namespace E2F_Server.Controllers
                 var parameters = new DynamicParameters();
                 foreach (var item in form) parameters.Add(item.Key, item.Value.First());
                 var query = SqlHelper.GetInsertQuery(tblName, parameters.ParameterNames.ToArray());
-                Console.WriteLine(query);
                 await Program.Sql.ExecuteAsync(query, parameters);
 
                 var sheet = structure.Sheets[tblName];

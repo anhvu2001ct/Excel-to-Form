@@ -49,17 +49,17 @@ namespace E2F_Server.Controllers
         {
             try
             {
-                var sheetId = data.GetProperty("sheetId").GetString()!;
+                var sheetId = data.GetProperty("workbookId").GetString()!;
                 var sheetIndex = data.GetProperty("sheetIndex").GetInt16();
                 var rowIndex = data.GetProperty("rowIndex").GetInt16();
                 var startCol = data.GetProperty("startCol").GetString()!;
                 var endCol = data.GetProperty("endCol").GetString()!;
 
 
-                if (!Util.DataExists(sheetId)) return BadRequest(new
+                if (!Util.DataExists(Path.Combine("sheet", sheetId))) return BadRequest(new
                 {
                     success = false,
-                    message = "Sheet id invalid"
+                    message = "Workbook id invalid"
                 });
 
                 using (var excel = new ExcelPackage())
