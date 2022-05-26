@@ -70,10 +70,19 @@ namespace E2F_Server.Controllers
 
                     if (sheet.Hidden != eWorkSheetHidden.Visible) throw new Exception();
 
+                    var cord = SheetHelper.ValidateSheetCord(sheet, rowIndex, startCol, endCol);
+                    var valid = cord.ColumnStart != null;
+
+                    if (!valid)
+                    {
+                        cord.ColumnStart = startCol;
+                        cord.ColumnEnd = endCol;
+                    }
+
                     return Ok(new
                     {
                         success = true,
-                        message = SheetHelper.ValidateSheetCord(sheet, rowIndex, startCol, endCol)
+                        message = new { valid, cord }
                     });
                 }
             }
