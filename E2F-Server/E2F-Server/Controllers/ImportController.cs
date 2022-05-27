@@ -52,9 +52,11 @@ namespace E2F_Server.Controllers
                 var sheetId = data.GetProperty("workbookId").GetString()!;
                 var sheetIndex = data.GetProperty("sheetIndex").GetInt16();
                 var rowIndex = data.GetProperty("rowIndex").GetInt16();
-                var startCol = data.GetProperty("startCol").GetString()!;
-                var endCol = data.GetProperty("endCol").GetString()!;
+                var startCol = Util.SubMax(data.GetProperty("startCol").GetString()!, 3);
+                var endCol = Util.SubMax(data.GetProperty("endCol").GetString()!, 3);
 
+                if (SheetHelper.ColumnNameToNumber(startCol) > SheetHelper.ColumnNameToNumber(endCol))
+                    (startCol, endCol) = (endCol, startCol);
 
                 if (!Util.DataExists(Path.Combine("sheet", sheetId))) return BadRequest(new
                 {
@@ -70,19 +72,12 @@ namespace E2F_Server.Controllers
 
                     if (sheet.Hidden != eWorkSheetHidden.Visible) throw new Exception();
 
-                    var cord = SheetHelper.ValidateSheetCord(sheet, rowIndex, startCol, endCol);
-                    var valid = cord.ColumnStart != null;
-
-                    if (!valid)
-                    {
-                        cord.ColumnStart = startCol;
-                        cord.ColumnEnd = endCol;
-                    }
+                    var res = SheetHelper.ValidateSheetCord(sheet, rowIndex, startCol, endCol);
 
                     return Ok(new
                     {
                         success = true,
-                        message = new { valid, cord }
+                        message = new { res.Valid, res.Cord }
                     });
                 }
             }
@@ -104,10 +99,10 @@ namespace E2F_Server.Controllers
                 var query = SqlHelper.GetInsertIdQuery("Workbook", "Id", "Name", "WorkbookId", "Description", "Extension");
                 int workbookId = await Program.Sql.ExecuteScalarAsync<int>(query, new
                 {
-                    Name = workbook.Name,
-                    WorkbookId = workbook.WorkbookId,
-                    Description = workbook.Description,
-                    Extension = workbook.Extension
+                    workbook.Name,
+                    workbook.WorkbookId,
+                    workbook.Description,
+                    workbook.Extension
                 });
                 //Console.WriteLine($"Inserted id = {workbookId}");
 

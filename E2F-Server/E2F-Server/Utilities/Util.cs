@@ -79,5 +79,11 @@ namespace E2F_Server.Utilities
             if (!mimeData.TryGetContentType(filePath, out string? res)) res = "application/octet-stream";
             return res;
         }
+
+        public static string SubMax(string s, int length)
+        {
+            if (s.Length <= length) return s;
+            return s[..length];
+        }
     }
 }

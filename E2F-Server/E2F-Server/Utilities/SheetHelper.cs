@@ -25,7 +25,7 @@ namespace E2F_Server.Utilities
             return res;
         }
 
-        public static SheetCord ValidateSheetCord(ExcelWorksheet sheet, int rowIndex, string startCol, string endCol)
+        public static SheetPreImport ValidateSheetCord(ExcelWorksheet sheet, int rowIndex, string startCol, string endCol)
         {
             var res = new SheetPreImport
             {
@@ -35,11 +35,13 @@ namespace E2F_Server.Utilities
                 }
             };
             UpdateSheet(sheet, res, startCol, endCol);
-            return res.Cord;
+            return res;
         }
 
         public static void UpdateSheet(ExcelWorksheet sheet, SheetPreImport data, string startCol, string endCol)
         {
+            if (ColumnNameToNumber(endCol) - ColumnNameToNumber(startCol) + 1 > Constraint.UPPER_COLUMN_RANGE) return;
+
             var cells = sheet.Cells[$"{startCol}{data.Cord.RowIndex}:{endCol}{data.Cord.RowIndex}"];
             string? lastCell = null;
 
@@ -59,7 +61,11 @@ namespace E2F_Server.Utilities
                 }
             }
 
-            if (lastCell != null) data.Cord.ColumnEnd = GetColumnFromAddress(lastCell);
+            if (lastCell != null)
+            {
+                data.Cord.ColumnEnd = GetColumnFromAddress(lastCell);
+                data.Valid = true;
+            }
         }
 
         public static void UpdateSheetWithData(ExcelWorksheet sheet, SheetCord cord, List<string[]> data)
@@ -159,6 +165,20 @@ namespace E2F_Server.Utilities
                 res.Add(data);
             }
             return res;
+        }
+
+        public static int ColumnNameToNumber(string columnName)
+        {
+            columnName = columnName.ToUpperInvariant();
+
+            int sum = 0;
+            for (int i = 0; i < columnName.Length; i++)
+            {
+                sum *= 26;
+                sum += (columnName[i] - 'A' + 1);
+            }
+
+            return sum;
         }
     }
 }
