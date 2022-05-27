@@ -54,7 +54,9 @@ namespace E2F_Server.Utilities
             {
                 Id = workbook.Id,
                 Name = workbook.Name,
-                Description = workbook.Description
+                Description = workbook.Description,
+                Url = workbook.Url,
+                CreatedAt = workbook.CreatedAt
             };
 
             var structure = await GetStructure(res.Id);
