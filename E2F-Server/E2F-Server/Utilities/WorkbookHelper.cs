@@ -56,7 +56,7 @@ namespace E2F_Server.Utilities
                 Name = workbook.Name,
                 Description = workbook.Description,
                 Url = workbook.Url,
-                CreatedAt = workbook.CreatedAt
+                CreatedAt = workbook.CreatedAt.ToString("yyyy-MM-dd")
             };
 
             var structure = await GetStructure(res.Id);
