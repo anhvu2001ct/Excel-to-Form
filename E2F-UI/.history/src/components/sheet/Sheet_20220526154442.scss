@@ -1,0 +1,60 @@
+@import "../../styles/mixin.scss";
+.sheet {
+  &-wrapper {
+    width: 100%;
+    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  &-item {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    border: 1px solid var(--border-color);
+    padding: 15px 10px;
+    border-radius: 5px;
+    &.error {
+      border-color: var(--red);
+    }
+  }
+  &-name {
+    max-width: 100px;
+    width: 100%;
+  }
+  &-name-title {
+    display: inline-block;
+    font-size: 14px;
+    text-transform: capitalize;
+    margin-bottom: 5px;
+  }
+  &-name-text {
+    @include textClamp(1);
+    padding-top: 5px;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+}
+//input
+.sheet-input {
+  &-container {
+    max-width: 400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 15px;
+  }
+  &-number {
+    width: 100%;
+    font-family: var(--primary-font);
+    padding: 10px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 14px;
+    transition: 0.25s linear;
+    &:focus {
+      border: 1px solid var(--primary-color);
+    }
+  }
+}

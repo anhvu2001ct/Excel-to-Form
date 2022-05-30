@@ -1,0 +1,16 @@
+@mixin textClamp($rows: 1, $size: 100%) {
+  display: -webkit-box;
+  -webkit-line-clamp: $rows;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: $size;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+@mixin bgColortext() {
+  color: var(--primary-color);
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: rgba(var(--primary-color-var), 0.3);
+}

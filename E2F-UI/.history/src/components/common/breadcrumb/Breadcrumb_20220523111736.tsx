@@ -1,0 +1,25 @@
+import BreadcrumbImage from "../../../data/img/breadcurmb-img.png";
+
+type Props = {
+  pages: string[];
+};
+
+const Breadcrumb = ({ pages }: Props) => {
+  return (
+    <div className="bread-container">
+      <div className="bread-img">
+        <img srcSet={`${BreadcrumbImage} 2x`} />
+      </div>
+      {pages.map((item) => (
+        <>
+          <div className="bread-direction">
+            <i className="far fa-angle-right"></i>
+          </div>
+          <span className="bread-title">{item}</span>
+        </>
+      ))}
+    </div>
+  );
+};
+
+export default Breadcrumb;

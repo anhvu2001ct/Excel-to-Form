@@ -1,0 +1,12 @@
+.break {
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-color);
+  }
+}

@@ -1,0 +1,21 @@
+.navigate {
+  &-container {
+    padding: 25px 18px;
+    max-width: 250px;
+    width: 100%;
+    background-color: white;
+  }
+  &-logo {
+    margin-top: 30px;
+  }
+  &-main {
+    width: 100%;
+  }
+  &-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,46 @@
+.sheet {
+  &-wrapper {
+    width: 100%;
+    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  &-item {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    border: 1px solid var(--border-color);
+    padding: 15px 10px;
+    border-radius: 5px;
+  }
+  &-name {
+    max-width: 100px;
+    width: 100%;
+  }
+  &-name-title {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  &-name-text {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+//input
+.sheet-input {
+  &-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+  }
+  &-number {
+    font-family: var(--primary-font);
+    padding: 10px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+  }
+}

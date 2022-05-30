@@ -1,0 +1,23 @@
+import { useEffect, useState } from "react";
+import { workbookEnpoint } from "../../../fetchingAPI/fetchingApi";
+import "./Input.scss";
+export default function Input({onSearch}) {
+  const [query, setQuery] = useState("");
+  useEffect(() => {}, [query]);
+  return (
+    <>
+      <div className="search">
+        <label htmlFor="search-input">
+          <i className="fal fa-search"></i>
+        </label>
+        <input
+          type="text"
+          id="search-input"
+          className="search-input"
+          placeholder="Search...."
+          onChange={(e) => onSearch(e.target.value)}
+        />
+      </div>
+    </>
+  );
+}

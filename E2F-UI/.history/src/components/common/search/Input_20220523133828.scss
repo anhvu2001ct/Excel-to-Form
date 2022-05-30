@@ -1,0 +1,18 @@
+:root {
+  --border-color: #cfcfcf;
+  --text-color-input: #cccccc;
+}
+.search {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color-input);
+  border-radius: 6px;
+  outline: none;
+  font-family: var(--primary-font);
+  font-size: 14px;
+  max-width: 256px;
+  width: 100%;
+  &-input{
+    
+  }
+}

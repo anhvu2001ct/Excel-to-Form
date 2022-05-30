@@ -1,0 +1,29 @@
+:root {
+  --border-color: #cfcfcf;
+  --text-color-input: #cccccc;
+}
+.search {
+  padding: 12px;
+  outline: 1px solid var(--border-color);
+  color: var(--text-color-input);
+  border-radius: 6px;
+  outline: none;
+  font-family: var(--primary-font);
+  font-size: 14px;
+  max-width: 256px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s;
+  &:focus-within {
+    outline: 2px solid var(--primary-color);
+    box-shadow: var(--primary-color) 0px 1px 2px 0px,
+      var(--primary-color) 0px 1px 3px 1px;
+    box-shadow: var(--primary-color) 0px 7px 29px 0px;
+  }
+  &-input {
+    border: none;
+    flex-grow: 1;
+  }
+}

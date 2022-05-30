@@ -1,0 +1,30 @@
+@mixin textClamp($rows: 1, $size: 100%) {
+  display: -webkit-box;
+  -webkit-line-clamp: $rows;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: $size;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+@mixin bgColortext($color) {
+  width: fit-content;
+  padding: 10px;
+  color: $color;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &::before {
+    border-radius: 1rem;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: currentColor;
+    opacity: 0.2;
+  }
+}

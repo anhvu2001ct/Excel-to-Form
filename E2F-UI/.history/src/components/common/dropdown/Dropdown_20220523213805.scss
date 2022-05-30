@@ -1,0 +1,13 @@
+.dropdown {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 5px 5px -3px rgb(39 44 51 / 10%),
+    0 8px 10px 1px rgb(39 44 51 / 4%), 0 3px 14px 2px rgb(39 44 51 / 2%);
+  list-style: none;
+  background-color: white;
+  position: absolute;
+  left: -100%;
+  bottom: 0;
+  padding: 10px;
+}

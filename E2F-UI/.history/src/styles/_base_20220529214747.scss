@@ -1,0 +1,12 @@
+.wrapper {
+  width: 100%;
+  background-color: var(--bg-color);
+  display: flex;
+  .container {
+    margin: 0 auto;
+    max-width: 1440px;
+    flex-grow: 1;
+    width: 100%;
+    padding: 30px;
+  }
+}

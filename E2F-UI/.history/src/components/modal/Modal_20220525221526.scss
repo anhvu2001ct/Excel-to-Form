@@ -1,0 +1,75 @@
+@import "../../styles/mixin.scss";
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #00000033;
+  transition: 0.25s linear;
+  & > .disable {
+    transform: scale(0);
+    visibility: hidden;
+  }
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.modal {
+  &-container {
+    background-color: white;
+    padding: 22px;
+    border-radius: 5px;
+    max-width: 750px;
+    width: 100%;
+    z-index: 9999;
+  }
+  &-top {
+    display: flex;
+    gap: 20px;
+  }
+  &-top-image {
+    width: 140px;
+    height: 160px;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+  &-top-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  &-top-title {
+    text-transform: uppercase;
+    @include bgColorText(var(--red));
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    > input {
+      text-align: center;
+      color: inherit;
+      border: none;
+      position: relative;
+      z-index: 5;
+      background-color: transparent;
+    }
+  }
+  &-top-desc {
+    width: 100%;
+    padding: 8px;
+    outline: none;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: none;
+    font-family: var(--primary-font);
+    color: var(--gray-dark-text);
+    border: 1px solid var(--border-color);
+    flex-grow: 1;
+  }
+}

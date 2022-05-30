@@ -1,0 +1,18 @@
+.separator {
+  color: #868e96;
+  display: flex;
+  align-items: center;
+  & span {
+    height: 1px;
+    width: 100%;
+    background-color: var(--border-color);
+  }
+  &-text {
+    max-width: 90%;
+    text-transform: uppercase;
+    font-size: 0.9375rem;
+    color: #303840;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+}
