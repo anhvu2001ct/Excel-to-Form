@@ -9,7 +9,7 @@ namespace E2F_Server.Controllers
 {
     public class SheetController : BaseController
     {
-        public class SheetQuery
+        public class  SheetQuery
         {
             public int WorkbookId { get; set; }
             public int SheetId { get; set; }

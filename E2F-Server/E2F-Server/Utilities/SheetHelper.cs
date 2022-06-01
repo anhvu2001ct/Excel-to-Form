@@ -161,7 +161,10 @@ namespace E2F_Server.Utilities
             while (await reader.ReadAsync())
             {
                 string[] data = new string[colCount];
-                for (int i = 0; i < data.Length; ++i) data[i] = reader.GetString(i + 1);
+                for (int i = 0; i < data.Length; ++i)
+                {
+                    data[i] = reader.IsDBNull(i + 1) ? "" : reader.GetString(i + 1);
+                }
                 res.Add(data);
             }
             return res;

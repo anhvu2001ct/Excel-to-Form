@@ -2,8 +2,6 @@
 using E2F_Server.Model;
 using E2F_Server.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml;
-using System.Text.Json;
 
 namespace E2F_Server.Controllers
 {
@@ -58,10 +56,11 @@ namespace E2F_Server.Controllers
         }
 
         [HttpGet("search/name")]
-        public async Task<IActionResult> SearchByName([FromQuery] string name)
+        public async Task<IActionResult> SearchByName([FromQuery] string? name)
         {
             try
             {
+                name ??= "";
                 var query = @"Select * from Workbook
                               where dbo.rmvAccent(Name) like concat(N'%',dbo.rmvAccent(@name),'%')";
                 var li = (await Program.Sql.QueryAsync<Workbook>(query, new { name })).ToList();
