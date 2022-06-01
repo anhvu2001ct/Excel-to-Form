@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Avatar from "../../data/img/breadcurmb-img.png";
 import DateIcon from "../../data/img/calendar-icon.png";
 import { Workbook } from "../../types/Wordbook";
@@ -11,7 +12,7 @@ export default function CardItem({
   createdAt,
 }: Workbook) {
   return (
-    <div className="card-item" key={id}>
+    <Link to={`workbook/${id}`} className="card-item" key={id}>
       <div className="card-img">
         <img srcSet={url || Avatar} alt="" />
       </div>
@@ -24,6 +25,6 @@ export default function CardItem({
       </div>
       <p className="card-desc">{description}</p>
       <Dropdown id={id} key={id}></Dropdown>
-    </div>
+    </Link>
   );
 }

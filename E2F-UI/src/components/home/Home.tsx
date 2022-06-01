@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-header">
-        <Breadcrumb pages={["Home"]} />
+        <Breadcrumb pages={["Home"]} links={[""]} />
         <Input onSearch={(name) => setSearch(name)} />
       </div>
       <Cards search={search} />

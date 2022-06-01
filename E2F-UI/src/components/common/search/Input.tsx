@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { genHTMLId } from "../../../lib/customId";
 import "./Input.scss";
 
 type Props = {
@@ -5,15 +7,16 @@ type Props = {
 };
 
 export default function Input({ onSearch }: Props) {
+  const cid = useRef(genHTMLId()).current;
   return (
     <>
       <div className="search">
-        <label htmlFor="search-input">
+        <label htmlFor={cid}>
           <i className="fal fa-search"></i>
         </label>
         <input
           type="text"
-          id="search-input"
+          id={cid}
           className="search-input"
           placeholder="Search...."
           onChange={(e) => onSearch(e.target.value)}

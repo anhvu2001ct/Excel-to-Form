@@ -1,95 +1,84 @@
 .sheet {
+  &-main {
+    background-color: white;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    height: 0;
+    transition: transform 0.33s;
+    overflow: hidden;
+    transform: translateY(-10px) scale(1.1);
+    &.active {
+      margin-top: 5px;
+      height: 100%;
+      transform: none;
+    }
+    &-content {
+      padding: 0 15px 15px 15px;
+    }
+  }
   &-detail {
     max-width: 1135px;
-    padding: 20px;
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16);
-    &-item {
-      width: 100%;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 20px;
+    &-search {
+      padding: 10px 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      & select {
+        height: 100% !important;
+      }
     }
     &-header {
+      border-radius: 5px;
+      padding: 15px;
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      margin-bottom: 10px;
       i {
         cursor: pointer;
         transform: rotate(90deg);
       }
     }
-    &-content {
-      width: 100%;
-      max-height: 500px;
-      overflow: auto;
-      & table {
-        width: 100%;
-        border: 1px solid #fcfcfd;
-      }
-      & table th,
-      table td {
-        padding: 15px 30px;
-        text-align: left;
-        vertical-align: middle;
-      }
-      & table th {
-        color: #475c74;
-        background-color: #eef4fc;
-        font-weight: 600;
-      }
-      & table td .sheet-table-content {
-        max-height: 300px;
-        overflow-y: auto;
-        overflow-x: hidden;
-      }
-      & table tbody tr {
-        cursor: pointer;
-        border-top: 1px solid #f0f4f8;
-        transition: 0.25s;
-        &:hover {
-          background-color: #f6f9fc;
-        }
-      }
-    }
+  }
+}
+.workbook-header {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  > div {
+    display: flex;
+    gap: 10px;
   }
 }
 //select custom
 .label {
+  display: inline-block;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
   text-transform: capitalize;
   color: var(--gray-light);
-  margin-bottom: 10px;
-}
-.select {
-  &-container {
-    background-color: white;
-    max-width: 400px;
-    width: 100%;
-    & > .selected {
-      padding: 10px 15px;
-      border-radius: 5px;
-      border: 1px solid var(--border-color);
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      i {
-        transform: rotate(90deg);
-      }
-    }
-    &-list {
-      width: 100%;
-      padding: 10px 15px;
-      border-radius: 5px;
-    }
+  margin-bottom: 5px;
+  &::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1;
+    content: "*";
   }
+}
+.btn-form-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+.workbook-name {
+  min-width: 200px;
+  padding: 2px 5px;
+  text-align: center;
 }

@@ -47,7 +47,7 @@ const NavigateItem = ({ title, icon, position, href, input }: Props) => {
         </>
       )}
       {!input && (
-        <NavLink to={href ?? title} className="navigate-item">
+        <NavLink to={href ?? title}  className="navigate-item">
           {position === "left" ? (
             <>
               <span className="navigate-item-text">{title}</span>

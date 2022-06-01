@@ -52,7 +52,8 @@
   }
   &-top-title {
     text-transform: uppercase;
-    @include bgColorText(var(--green));
+    @include bgColorText(var(--primary-color)); 
+    font-weight: bold;
     margin-bottom: 10px;
     flex-shrink: 0;
     transition: 0.25s;
@@ -77,7 +78,7 @@
     resize: none;
     font-family: var(--primary-font);
     color: var(--gray-dark-text);
-    border: 1px solid var(--green);
+    border: 1px solid var(--primary-color);
     flex-grow: 1;
     transition: 0.25s;
     &.error {

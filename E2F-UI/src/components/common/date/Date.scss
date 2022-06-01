@@ -1,0 +1,27 @@
+.date {
+  &-container {
+    max-width: 250px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  &-picker {
+    cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    font-family: var(--primary-font);
+    border-radius: 5px;
+  }
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0);
+  opacity: 1;
+  display: block;
+  background: url("../../../data/img/calendar-icon.png") no-repeat;
+  width: 25px;
+  height: 25px;
+  scale: 0.8;
+  object-fit: cover;
+}

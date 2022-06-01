@@ -11,7 +11,7 @@ export default function Cards({ search }: Props) {
 
   useEffect(() => {
     const loadData = async () => {
-      const reponse = fetch(`http://localhost:5121/api/v1/workbook/get/all`)
+      const response = fetch(`http://localhost:5121/api/v1/workbook/get/all`)
         .then((data) => data.json())
         .then((data) => {
           setWorkbooks(data.message);

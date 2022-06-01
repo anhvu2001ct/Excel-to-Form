@@ -1,0 +1,38 @@
+.sheet-detail {
+  &-content {
+    width: 100%;
+    max-height: 500px;
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    & table {
+      width: 100%;
+    }
+    & table th,
+    table td {
+      padding: 15px 30px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    & table th {
+      position: sticky;
+      top: 0;
+      color: #475c74;
+      background-color: #eef4fc;
+      font-weight: 600;
+    }
+    & table td .sheet-table-content {
+      max-height: 300px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    & table tbody tr {
+      cursor: pointer;
+      border-top: 1px solid #f0f4f8;
+      transition: 0.25s;
+      &:nth-child(even) {
+        background-color: #f6f9fc;
+      }
+    }
+  }
+}

@@ -11,7 +11,6 @@ const App = () => {
         <Navigate />
         <div className="container">
           <Outlet />
-          <WorkbookDetail />
         </div>
       </div>
     </>

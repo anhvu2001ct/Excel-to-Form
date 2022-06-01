@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "nanoid": "^3.3.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-hook-form": "^7.31.2",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {

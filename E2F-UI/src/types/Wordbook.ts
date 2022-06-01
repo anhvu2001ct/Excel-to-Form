@@ -2,7 +2,7 @@ export type SheetColumn = {
   id: string;
   name: string;
   type: string;
-  addtional?: unknown;
+  additional?: unknown;
 };
 
 export type Sheet = {

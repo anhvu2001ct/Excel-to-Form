@@ -1,0 +1,15 @@
+.textarea {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    textarea {
+      padding: 10px 15px;
+      resize: none;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-family: var(--primary-font);
+      line-height: 1.7;
+    }
+  }
+}

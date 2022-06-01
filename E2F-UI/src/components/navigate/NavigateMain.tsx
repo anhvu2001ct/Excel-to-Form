@@ -32,9 +32,7 @@ const NavigateMain = () => {
         return (
           <NavigateItem
             key={item.title}
-            title={item.title}
-            href={item.href}
-            icon={item.icon}
+            {...item}
             position={"right"}
           />
         );

@@ -1,12 +1,22 @@
 import "./Button.scss";
 type Props = {
   title: string;
-  type?: "primary" | "secondary";
+  type?: "primary" | "secondary" | "third";
+  isFormSubmit?: boolean;
   onClick?: () => void;
 };
-const Button = ({ title, type = "primary", onClick }: Props) => {
+const Button = ({
+  title,
+  type = "primary",
+  isFormSubmit = false,
+  onClick,
+}: Props) => {
   return (
-    <button className={`btn btn-${type}`} onClick={onClick}>
+    <button
+      type={isFormSubmit ? "submit" : "button"}
+      className={`btn btn-${type}`}
+      onClick={onClick}
+    >
       {title}
     </button>
   );

@@ -1,214 +1,81 @@
 import "./WorkbookDetail.scss";
 import Separator from "../common/separator/Separator";
+import Button from "../common/button/btnPrimary/Button";
+import Breadcrumb from "../common/breadcrumb";
+import { useEffect, useState } from "react";
+import { exportEnpoint, workbookEnpoint } from "../../fetchingAPI/fetchingApi";
+import { useParams } from "react-router-dom";
+import { Workbook } from "../../types/Wordbook";
+import LoadingCircle from "../loading/LoadingCircle";
+import SheetDetail from "./SheetDetail";
 const WorkbookDetail = () => {
+  const [workbook, setWorkbook] = useState<Workbook>();
+  const { id: workbookId } = useParams();
+  let loading = !workbook;
+  useEffect(() => {
+    async function GetDetail() {
+      const params = new URLSearchParams();
+      params.append("id", workbookId!);
+      const response = await fetch(`${workbookEnpoint}/get/single?${params}`, {
+        method: "GET",
+      });
+      try {
+        const data = await response.json();
+        if (data.ok) throw new Error(data.message);
+        const result = data.message;
+        setWorkbook(result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    GetDetail();
+  }, []);
+  const handleExportingOrigin = () => {
+    window.location.assign(exportEnpoint + `/origin/${workbookId}`);
+  };
+  const handleExportingFullData = () => {
+    window.location.assign(exportEnpoint + `/full/${workbookId}`);
+  };
   return (
     <>
+      {loading && <LoadingCircle />}
+      <div className="workbook-header">
+        <Breadcrumb pages={["Home", "Detail"]} links={["", ""]} />
+        <div>
+          <Button
+            type="third"
+            title="Export origin"
+            onClick={handleExportingOrigin}
+          />
+          <Button
+            type="third"
+            title="Export workbook"
+            onClick={handleExportingFullData}
+          />
+        </div>
+      </div>
       <div className="modal-top">
         <img
-          src={"https://source.unsplash.com/random"}
+          src={workbook?.url || "https://source.unsplash.com/random"}
           alt="hinh"
           className="modal-top-image modal-top-image--detail"
         />
         <div className="modal-top-content">
           <div className={`modal-top-title `}>
-            <input placeholder="Enter title" name="name" />
+            <div className="workbook-name">{workbook?.name} </div>
           </div>
-          <textarea
-            name="description"
-            className={`modal-top-desc`}
-            placeholder="Description goes here..."
-          ></textarea>
+          <p className={`modal-top-desc`}>{workbook?.description}</p>
         </div>
       </div>
       <Separator title={"Sheets"} />
-      <div className="sheet-detail">
-        <div className="sheet-detail-item">
-          <div className="sheet-detail-header">
-            <span className="sheet-detail-title">About_FPT</span>
-            <i className="fas fa-caret-right"></i>
-          </div>
-          <div className="sheet-detail-content">
-            <table className="sheet-detail-table">
-              <thead>
-                <tr>
-                  <th>
-                    <div className="sheet-table-header">No</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Role</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Account</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Full Name</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Email</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Star Date</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">No</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Role</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Account</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Full Name</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Email</div>
-                  </th>
-                  <th>
-                    <div className="sheet-table-header">Star Date</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Anvt456</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Exercitationem tempore cupiditate repudiandae est. Enim
-                      tempora minus, reprehenderit quo laboriosam quidem velit
-                      ab iure distinctio! Officiis ipsam totam omnis iusto sed.
-                    </div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Anvt456</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Anvt456</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Anvt456</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">1</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">PM</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Anvt456</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Vo Thanh An</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content">Lorem</div>
-                  </td>
-                  <td>
-                    <div className="sheet-table-content"></div>1/1/2022
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <Separator title="Form" />
-          <form action="#" className="sheet-form">
-            <div className="select-container">
-              <span className="label">Role</span>
-              <div className="selected">
-                <span>Title</span>
-                <i className="fas fa-caret-right"></i>
-              </div>
-              <ul className="select-list">
-                <li>PM</li>
-                <li>Front-end</li>
-                <li>FM</li>
-              </ul>
-            </div>
-          </form>
-        </div>
-      </div>
+      {workbook?.sheets.map((item, index) => (
+        <SheetDetail
+          key={index}
+          sheet={item}
+          index={index}
+          workbookId={workbookId as unknown as number}
+        />
+      ))}
     </>
   );
 };
