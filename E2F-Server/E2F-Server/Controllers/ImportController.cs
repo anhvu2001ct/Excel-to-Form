@@ -49,16 +49,34 @@ namespace E2F_Server.Controllers
         {
             try
             {
-                var sheetId = data.GetProperty("workbookId").GetString()!;
+                var workbookId = data.GetProperty("workbookId").GetString()!;
                 var sheetIndex = data.GetProperty("sheetIndex").GetInt16();
-                var rowIndex = data.GetProperty("rowIndex").GetInt16();
-                var startCol = Util.SubMax(data.GetProperty("startCol").GetString()!, 3);
-                var endCol = Util.SubMax(data.GetProperty("endCol").GetString()!, 3);
+                var rowIndex = data.GetProperty("rowIndex").GetInt32();
+                var startCol = Util.SubMax(data.GetProperty("startCol").GetString()!, 3).ToUpperInvariant();
+                var endCol = Util.SubMax(data.GetProperty("endCol").GetString()!, 3).ToUpperInvariant();
 
-                if (SheetHelper.ColumnNameToNumber(startCol) > SheetHelper.ColumnNameToNumber(endCol))
+                int startColNum = SheetHelper.ColumnNameToNumber(startCol);
+                int endColNum = SheetHelper.ColumnNameToNumber(endCol);
+
+                if (startColNum > endColNum)
+                {
                     (startCol, endCol) = (endCol, startCol);
+                    (startColNum, endColNum) = (endColNum, startColNum);
+                }
 
-                if (!Util.DataExists(Path.Combine("sheet", sheetId))) return BadRequest(new
+                if (endColNum > SheetHelper.ColumnNameToNumber(Constraint.MAX_COLUMN_VALID)) return BadRequest(new
+                {
+                    success = false,
+                    message = "Column field(s) cannot exceed 'OZZ'"
+                });
+                
+                if (endColNum - startColNum + 1 > Constraint.UPPER_COLUMN_RANGE) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Request column range cannot exceed {Constraint.UPPER_COLUMN_RANGE}"
+                });
+
+                if (!Util.DataExists(Path.Combine("sheet", workbookId))) return BadRequest(new
                 {
                     success = false,
                     message = "Workbook id invalid"
@@ -66,7 +84,7 @@ namespace E2F_Server.Controllers
 
                 using (var excel = new ExcelPackage())
                 {
-                    string filePath = Path.Combine(Program.RootPath, "Data", "sheet", sheetId);
+                    string filePath = Path.Combine(Program.RootPath, "Data", "sheet", workbookId);
                     await excel.LoadAsync(filePath);
                     var sheet = excel.Workbook.Worksheets[sheetIndex];
 
@@ -104,7 +122,6 @@ namespace E2F_Server.Controllers
                     workbook.Description,
                     workbook.Extension
                 });
-                //Console.WriteLine($"Inserted id = {workbookId}");
 
                 var wbDetail = new WorkbookStructure();
 

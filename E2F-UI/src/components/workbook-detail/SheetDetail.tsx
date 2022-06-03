@@ -67,7 +67,7 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
           <div className="sheet-detail-search">
             <Input onSearch={(str) => handleSearchData(str, searchData[1])} />
             <Select
-              addtional={["None", ...sheet.columns.map((item) => item.name)]}
+              addtional={["Select filter column", ...sheet.columns.map((item) => item.name)]}
               dataKeys={["", ...sheet.columns.map((item) => item.id)]}
               onChange={(str) => handleSearchData(searchData[0], str)}
             />

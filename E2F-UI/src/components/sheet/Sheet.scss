@@ -19,6 +19,9 @@
     border-color: var(--green);
     &.error {
       border-color: var(--red);
+      button {
+        background-color: var(--red);
+      }
     }
   }
   &-name {

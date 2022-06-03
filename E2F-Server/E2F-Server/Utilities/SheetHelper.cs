@@ -40,8 +40,6 @@ namespace E2F_Server.Utilities
 
         public static void UpdateSheet(ExcelWorksheet sheet, SheetPreImport data, string startCol, string endCol)
         {
-            if (ColumnNameToNumber(endCol) - ColumnNameToNumber(startCol) + 1 > Constraint.UPPER_COLUMN_RANGE) return;
-
             var cells = sheet.Cells[$"{startCol}{data.Cord.RowIndex}:{endCol}{data.Cord.RowIndex}"];
             string? lastCell = null;
 
@@ -172,8 +170,6 @@ namespace E2F_Server.Utilities
 
         public static int ColumnNameToNumber(string columnName)
         {
-            columnName = columnName.ToUpperInvariant();
-
             int sum = 0;
             for (int i = 0; i < columnName.Length; i++)
             {

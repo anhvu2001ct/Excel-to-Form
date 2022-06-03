@@ -4,6 +4,7 @@ import { importEndpoint } from "../../fetchingAPI/fetchingApi";
 import { ResultType } from "../../types/common";
 import { SheetCord } from "../../types/WorkbookImport";
 import ButtonCheck from "../common/button/btnCheck/ButtonCheck";
+import { add } from "../notification/Notifications";
 import SheetInput from "./SheetInput";
 type Props = {
   index: number;
@@ -45,7 +46,7 @@ const SheetItem = ({ index }: Props) => {
         newState.sheets[index].valid = false;
         return newState;
       });
-      console.log(error);
+      add("error", (error as Error).message);
     }
   };
 

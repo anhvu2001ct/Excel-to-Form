@@ -15,7 +15,7 @@
 
         public const int UPPER_COLUMN_RANGE = 5000;
 
-        public const int LOWER_COLUMN_RANGE = 100;
+        public const string MAX_COLUMN_VALID = "OZZ";
 
         public static string GetExtErrorMsg(string[] ext)
         {

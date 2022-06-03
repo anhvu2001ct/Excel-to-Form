@@ -30,7 +30,8 @@ const SheetInput = ({ title, placeHolder, type, index, cordType }: Props) => {
           )
             return;
           setWorkbookImport((old) => {
-            (old.sheets[index].cord[cordType] as any) = e.target.value;
+            const value = type === "number" ? parseInt(e.target.value) : e.target.value;
+            (old.sheets[index].cord[cordType] as any) = value;
             return { ...old };
           });
         }}
