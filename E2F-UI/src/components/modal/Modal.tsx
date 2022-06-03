@@ -24,12 +24,16 @@ function Modal({ file, close }: Props) {
   const loading = !workbookImport;
   const hanleSubmit = async () => {
     try {
+      workbookImport.name = workbookImport.name.trim();
       if (!workbookImport.name) throw new Error("Name can't be empty");
-      if (!workbookImport.description)
-        throw new Error("Description can't be empty");
+
+      workbookImport.description = workbookImport.description?.trim();
+      if (!workbookImport.description) throw new Error("Description can't be empty");
+
       for (const sheet of workbookImport.sheets) {
         if (!sheet.valid) throw new Error("Input is not valid");
       }
+      
       const response = await fetch(endPoint("submit"), {
         method: "POST",
         body: JSON.stringify(workbookImport),
