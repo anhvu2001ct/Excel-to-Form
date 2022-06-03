@@ -22,7 +22,6 @@ export default memo(function Form({
 }: Props) {
   const ref = useRef<any>();
   const [errorForm, setErrorForm] = useState<string[]>([]);
-  console.log("errorForm", errorForm);
   const handleSubmit = async () => {
     try {
       const formData = new FormData(ref.current);

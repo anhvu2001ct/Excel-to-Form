@@ -10,6 +10,11 @@ export type Sheet = {
   columns: SheetColumn[];
 };
 
+export type SheetRow = {
+  id: number;
+  data: string[];
+};
+
 export type Workbook = {
   id: number;
   name: string;

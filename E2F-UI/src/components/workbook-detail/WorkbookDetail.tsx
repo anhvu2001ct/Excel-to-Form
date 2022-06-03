@@ -64,7 +64,9 @@ const WorkbookDetail = () => {
           <div className={`modal-top-title `}>
             <div className="workbook-name">{workbook?.name} </div>
           </div>
-          <p className={`modal-top-desc`}>{workbook?.description}</p>
+          <textarea className={`modal-top-desc`}>
+            {workbook?.description}
+          </textarea>
         </div>
       </div>
       <Separator title={"Sheets"} />

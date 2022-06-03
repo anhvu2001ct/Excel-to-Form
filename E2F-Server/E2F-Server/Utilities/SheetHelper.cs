@@ -68,14 +68,15 @@ namespace E2F_Server.Utilities
             }
         }
 
-        public static void UpdateSheetWithData(ExcelWorksheet sheet, SheetCord cord, List<string[]> data)
+        public static void UpdateSheetWithData(ExcelWorksheet sheet, SheetCord cord, List<SheetRow> data)
         {
             int firstRow = cord.RowIndex + 1;
             var range = sheet.Cells[$"{cord.ColumnStart}{firstRow}:{cord.ColumnEnd}{firstRow}"];
             sheet.InsertRow(firstRow + 1, data.Count - 1);
             for (int i = 1; i < data.Count; i++)
                 range.Copy(sheet.Cells[$"{cord.ColumnStart}{firstRow + i}"]);
-            range.LoadFromArrays(data);
+            var rowData = data.Select(row => row.Data);
+            range.LoadFromArrays(rowData);
         }
 
         public static string GetColumnFromAddress(string address)
@@ -154,18 +155,23 @@ namespace E2F_Server.Utilities
             return "text";
         }
 
-        public static async Task<List<string[]>> ReadData(DbDataReader reader)
+        public static async Task<List<SheetRow>> ReadData(DbDataReader reader)
         {
             int colCount = reader.FieldCount - 1;
-            List<string[]> res = new();
+            List<SheetRow> res = new();
             while (await reader.ReadAsync())
             {
-                string[] data = new string[colCount];
-                for (int i = 0; i < data.Length; ++i)
+                SheetRow row = new SheetRow
                 {
-                    data[i] = reader.IsDBNull(i + 1) ? "" : reader.GetString(i + 1);
+                    Id = reader.GetInt32(0),
+                    Data = new string[colCount]
+                };
+
+                for (int i = 0; i < colCount; ++i)
+                {
+                    row.Data[i] = reader.IsDBNull(i+1) ? "" : reader.GetString(i+1);
                 }
-                res.Add(data);
+                res.Add(row);
             }
             return res;
         }

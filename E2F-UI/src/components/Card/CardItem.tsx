@@ -4,13 +4,18 @@ import DateIcon from "../../data/img/calendar-icon.png";
 import { Workbook } from "../../types/Wordbook";
 import Dropdown from "../common/dropdown/Dropdown";
 
+interface Props extends Workbook {
+  onDelete: (id: number) => void;
+}
+
 export default function CardItem({
   id,
   name,
   description,
   url,
   createdAt,
-}: Workbook) {
+  onDelete,
+}: Props) {
   return (
     <div className="card-item">
       <Link to={`workbook/${id}`} className="card-item-detail" key={id}>
@@ -26,7 +31,7 @@ export default function CardItem({
         </div>
         <p className="card-desc">{description}</p>
       </Link>
-      <Dropdown id={id} key={id}></Dropdown>
+      <Dropdown list={["Delete"]} onClick={() => onDelete(id)}></Dropdown>
     </div>
   );
 }
