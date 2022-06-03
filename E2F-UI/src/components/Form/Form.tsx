@@ -6,6 +6,7 @@ import Date from "../common/date/Date";
 import InputForm from "../common/input/InputForm";
 import Select from "../common/select/Select";
 import Textarea from "../common/textarea/Textarea";
+import { add } from "../notification/Notifications";
 import "./Form.scss";
 type Props = {
   sheetId: number;
@@ -13,7 +14,6 @@ type Props = {
   columns: SheetColumn[];
   onSubmit: () => void;
 };
-
 export default memo(function Form({
   columns,
   sheetId,
@@ -21,9 +21,14 @@ export default memo(function Form({
   onSubmit,
 }: Props) {
   const ref = useRef<any>();
+  const [errorForm, setErrorForm] = useState<string[]>([]);
+  console.log("errorForm", errorForm);
   const handleSubmit = async () => {
     try {
       const formData = new FormData(ref.current);
+      if (errorForm.length > 0) {
+        return;
+      }
       const response = await fetch(
         sheetEnpoint + `/add/${workbookId}/${sheetId}/`,
         {
@@ -32,10 +37,12 @@ export default memo(function Form({
         }
       );
       const result = await response.json();
+      add("success", "Data already added succecssfully");
+
       if (!response.ok) throw new Error(result.message);
       onSubmit();
     } catch (error) {
-      console.error(error);
+      add("error", error as string);
     }
   };
 
@@ -44,6 +51,8 @@ export default memo(function Form({
       case "text":
         return (
           <InputForm
+            error={errorForm!}
+            setErrorForm={setErrorForm}
             type={sheetCol.type}
             key={index}
             title={sheetCol.name}
@@ -64,6 +73,8 @@ export default memo(function Form({
       case "phone":
         return (
           <InputForm
+            error={errorForm!}
+            setErrorForm={setErrorForm}
             type={sheetCol.type}
             key={index}
             title={sheetCol.name}
@@ -73,6 +84,8 @@ export default memo(function Form({
       case "email":
         return (
           <InputForm
+            error={errorForm!}
+            setErrorForm={setErrorForm}
             type={sheetCol.type}
             key={index}
             title={sheetCol.name}

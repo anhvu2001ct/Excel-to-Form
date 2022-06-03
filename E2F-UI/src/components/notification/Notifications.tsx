@@ -16,20 +16,23 @@ const Notifications = () => {
 
   const counter = useRef(0);
   add = (type: Props["type"], message: Props["message"]) => {
+    console.log("add started");
+
     let id = ++counter.current;
     setNotifications((prevState) => {
       return { ...prevState, [id]: { type, message } };
     });
     setTimeout(() => {
       setNotifications((prev) => {
+        console.log("set Noti ");
         const newState = { ...prev };
         delete newState[id];
         return newState;
       });
-    }, 5550);
+    }, 6000);
   };
   return (
-    <div className={`toast-list`}>
+    <div className={`toast-list active`}>
       {Object.keys(notifications).map((key) => {
         const item = notifications[key];
         return <NotificationItem {...item} key={key} />;
@@ -41,9 +44,6 @@ const Notifications = () => {
 const NotificationItem = React.memo(function ({ type, message }: Props) {
   const [active, setActive] = useState(true);
   useEffect(() => {
-    setTimeout(() => {
-      setActive(true);
-    }, 20);
     setTimeout(() => {
       setActive(false);
     }, 5000);

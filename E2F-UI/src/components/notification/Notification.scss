@@ -5,6 +5,7 @@
     right: 30px;
     z-index: 999999999;
     width: 350px;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
   }
   border-radius: 12px;
   background-color: white;
@@ -13,19 +14,22 @@
   border-left: 6px solid var(--green);
   overflow: hidden;
   width: 100%;
-  transform: translateX(calc(100% + 30px));
+  transform: translateX(calc(100% + 35px));
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
   margin-bottom: 10px;
+  &.active {
+    transform: translateX(0);
+  }
   &.error {
     border-left-color: var(--red);
+    & .toast-content .check {
+      background-color: var(--red);
+    }
   }
   &.error.active {
     & .check {
       background-color: var(--red);
     }
-  }
-  &.active {
-    transform: translateX(0);
   }
   &.active .progress::after {
     animation: progress 5s linear forwards;
@@ -88,6 +92,9 @@
     }
   }
   &.error.active .progress::after {
+    background-color: var(--red);
+  }
+  &.error .progress::after {
     background-color: var(--red);
   }
 }

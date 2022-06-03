@@ -82,5 +82,28 @@ namespace E2F_Server.Controllers
             }
         }
 
+        [HttpDelete("delete/{id:int}")]
+        public async Task<IActionResult> DeleteByID(int id)
+        {
+            try
+            {
+                var query = "delete from workbook where Id=@id";
+                await Program.Sql.ExecuteAsync(query, new { id });
+                return Ok(new
+                {
+                    status = true,
+                    message = $"Deleted workbookId={id}"
+                });
+            }
+            catch
+            {
+                return StatusCode(500, new
+                {
+                    status = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
+
     }
 }

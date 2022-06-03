@@ -15,10 +15,14 @@ export default function ModalHeader() {
             workbookImport?.name.length < 1 ? "error" : ""
           }`}
         >
+          <label htmlFor="modal-name" className="modal-top-label">
+            <i className="fas fa-pen-alt"></i>
+          </label>
           <input
             value={workbookImport?.name ?? ""}
             placeholder="Enter title"
             name="name"
+            id="modal-name"
             onChange={(e) => {
               setWorkbookImport((old) => ({ ...old, name: e.target.value }));
             }}

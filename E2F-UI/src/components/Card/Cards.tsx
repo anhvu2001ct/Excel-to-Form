@@ -3,6 +3,7 @@ import "./Card.scss";
 import { useEffect, useState } from "react";
 import { Workbook } from "../../types/Wordbook";
 import { modalEvent } from "../modal/Modal";
+import { deleteEvent } from "../common/dropdown/Dropdown";
 type Props = {
   search: string;
 };
@@ -17,8 +18,12 @@ export default function Cards({ search }: Props) {
           setWorkbooks(data.message);
         });
     };
+    deleteEvent.subscribe(loadData);
     modalEvent.subscribe(loadData);
-    return () => modalEvent.unSubscribe(loadData);
+    return () => {
+      modalEvent.unSubscribe(loadData);
+      deleteEvent.unSubscribe(loadData);
+    };
   }, []);
 
   useEffect(() => {

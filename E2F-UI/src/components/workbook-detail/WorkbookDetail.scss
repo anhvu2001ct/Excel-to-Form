@@ -62,14 +62,6 @@
   text-transform: capitalize;
   color: var(--gray-light);
   margin-bottom: 5px;
-  &::before {
-    display: inline-block;
-    margin-right: 4px;
-    color: var(--red);
-    font-size: 14px;
-    line-height: 1;
-    content: "*";
-  }
 }
 .btn-form-container {
   display: flex;

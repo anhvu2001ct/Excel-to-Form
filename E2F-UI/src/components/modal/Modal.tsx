@@ -61,7 +61,9 @@ function Modal({ file, close }: Props) {
         const result = data.message as WorkbookImport;
         setWorkbookImport(result);
       } catch (error) {
-        console.error(error);
+        const _error = error as Error;
+        add("error", _error.message);
+
         close();
       }
     };

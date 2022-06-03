@@ -12,19 +12,21 @@ export default function CardItem({
   createdAt,
 }: Workbook) {
   return (
-    <Link to={`workbook/${id}`} className="card-item" key={id}>
-      <div className="card-img">
-        <img srcSet={url || Avatar} alt="" />
-      </div>
-      <div className="card-info">
-        <div className="card-info-title">{name}</div>
-        <div className="card-info-date">
-          <img srcSet={DateIcon} alt="" className="card-info-icon" />
-          <span className="card-info-text">{createdAt}</span>
+    <div className="card-item">
+      <Link to={`workbook/${id}`} className="card-item-detail" key={id}>
+        <div className="card-img">
+          <img srcSet={url || Avatar} alt="" />
         </div>
-      </div>
-      <p className="card-desc">{description}</p>
+        <div className="card-info">
+          <div className="card-info-title">{name}</div>
+          <div className="card-info-date">
+            <img srcSet={DateIcon} alt="" className="card-info-icon" />
+            <span className="card-info-text">{createdAt}</span>
+          </div>
+        </div>
+        <p className="card-desc">{description}</p>
+      </Link>
       <Dropdown id={id} key={id}></Dropdown>
-    </Link>
+    </div>
   );
 }
