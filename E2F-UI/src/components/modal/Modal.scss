@@ -56,7 +56,6 @@
     z-index: 10;
   }
   &-top-title {
-    text-transform: uppercase;
     @include bgColorText(var(--primary-color));
     font-weight: bold;
     margin-bottom: 10px;
