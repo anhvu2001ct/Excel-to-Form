@@ -54,7 +54,7 @@ export default memo(function InputForm({
         type={type === "phone" ? "text" : type}
         name={id}
         id={cid}
-        placeholder="enter your content here"
+        placeholder="Enter your data"
         className="input-form"
         onChange={(e) => {
           handleErorr(e);
