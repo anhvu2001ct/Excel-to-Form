@@ -1,3 +1,9 @@
+import "./NotFoundStyle.scss";
+import  imgNotFound from "../../data/img/notfound.png"
 export default function () {
-  return <p>Page not found</p>;
+  return (
+    <div className="div-image">
+      <img src={imgNotFound} alt="image not found" />
+    </div>
+  );
 }
