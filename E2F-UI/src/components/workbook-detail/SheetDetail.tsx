@@ -85,7 +85,10 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
       <div className={`sheet-main ${active ? "active" : ""}`}>
         <div className="sheet-main-content">
           <div className="sheet-detail-search">
-            <Input onSearch={(str) => handleSearchData(str, searchData[1])} />
+            <Input
+              placeholder="Search by content..."
+              onSearch={(str) => handleSearchData(str, searchData[1])}
+            />
             <Select
               addtional={[
                 "Select filter column",

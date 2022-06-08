@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import { Workbook } from "../../types/Wordbook";
 import LoadingCircle from "../loading/LoadingCircle";
 import SheetDetail from "./SheetDetail";
+import DateIcon from "../../data/img/calendar-icon.png";
+
 const WorkbookDetail = () => {
   const [workbook, setWorkbook] = useState<Workbook>();
   const { id: workbookId } = useParams();
@@ -61,8 +63,15 @@ const WorkbookDetail = () => {
           className="modal-top-image modal-top-image--detail"
         />
         <div className="modal-top-content">
-          <div className={`modal-top-title `}>
-            <div className="workbook-name">{workbook?.name} </div>
+          <div className="workbook-top-header">
+            <div className={`modal-top-title `}>
+              <div className="workbook-name">{workbook?.name} </div>
+            </div>
+            <div className="workbook-top-date">
+              <img srcSet={DateIcon} alt="" className="workbook-top-icon" />
+              <span>:</span>
+              <span className="workbook-top-text">{workbook?.createdAt}</span>
+            </div>
           </div>
           <textarea
             className={`modal-top-desc`}
