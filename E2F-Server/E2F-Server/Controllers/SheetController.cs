@@ -110,6 +110,7 @@ namespace E2F_Server.Controllers
                 });
             }
         }
+
         [HttpDelete("delete/{workbookId:int}/{sheetId:int}/{rowId:int}")]
         public async Task<IActionResult> DeleteRowById(int workbookId, int sheetId,int rowId)
         {
@@ -126,6 +127,42 @@ namespace E2F_Server.Controllers
                 });
             }
             catch 
+            {
+                return StatusCode(500, new
+                {
+                    status = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
+
+        [HttpPost("edit/{workbookId:int}/{sheetId:int}/{rowId:int}")]
+        public async Task<IActionResult> EditRowById(int workbookId, int sheetId, int rowId, IFormCollection form)
+        {
+            try
+            {
+                if (form.Count < 1) return BadRequest(new
+                {
+                    success = false,
+                    message = "At least one field must not empty"
+                });
+
+                var structure = await WorkbookHelper.GetStructure(workbookId);
+                var tblName = structure.Order[sheetId];
+                var parameters = new DynamicParameters();
+                foreach (var item in form) parameters.Add(item.Key, item.Value.First());
+                var query = SqlHelper.GetUpdateQuery(tblName, "Id", parameters.ParameterNames.ToArray());
+                parameters.Add("Id", rowId);
+                await Program.Sql.ExecuteAsync(query, parameters);
+
+                var sheet = structure.Sheets[tblName];
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Edited rowId={rowId} of sheet={sheet.Name} in workbookId={workbookId}"
+                });
+            }
+            catch
             {
                 return StatusCode(500, new
                 {

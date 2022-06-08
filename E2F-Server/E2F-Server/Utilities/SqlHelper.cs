@@ -8,6 +8,12 @@
             return $"insert into {table}({keys}) values({values})";
         }
 
+        public static string GetUpdateQuery(string table, string tableId, params string[] props)
+        {
+            var new_data = string.Join(", ", props.Select(p => $"{p}=@{p}"));
+            return $"update {table} set {new_data} where {tableId}=@{tableId}";
+        }
+
         public static string GetInsertIdQuery(string table, string tableId, params string[] props)
         {
             string keys = string.Join(", ", props);
