@@ -5,6 +5,7 @@ import {
   WorkbookImportProvider,
 } from "../../context/workbookImport-context";
 import { Modal } from "../modal/Modal";
+import { add } from "../notification/Notifications";
 type Props = {
   title: string;
   icon: string;
@@ -16,7 +17,12 @@ type Props = {
 const NavigateItem = ({ title, icon, position, href, input }: Props) => {
   const [file, setFile] = useState<File>();
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files![0]);
+    const _file = e.target.files![0];
+    if (_file.size > 50000000) {
+      add("error", "File size exceed 50MB!");
+      return;
+    }
+    setFile(_file);
   };
   return (
     <Fragment>
@@ -28,9 +34,11 @@ const NavigateItem = ({ title, icon, position, href, input }: Props) => {
               <i className={`fal fa-${icon}`}></i>
             </span>
           </label>
+
           <input
             type="file"
             id="input-file"
+            className="navigate-input"
             onChange={handleFile}
             onClick={(e) => ((e.target as HTMLInputElement).value = "")}
           />
@@ -47,7 +55,7 @@ const NavigateItem = ({ title, icon, position, href, input }: Props) => {
         </>
       )}
       {!input && (
-        <NavLink to={href ?? title}  className="navigate-item">
+        <NavLink to={href ?? title} className="navigate-item">
           {position === "left" ? (
             <>
               <span className="navigate-item-text">{title}</span>

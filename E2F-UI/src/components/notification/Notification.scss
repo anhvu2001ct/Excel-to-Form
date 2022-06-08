@@ -45,6 +45,7 @@
       align-items: center;
       height: 35px;
       width: 35px;
+      flex-shrink: 0;
       background-color: var(--green);
       color: white;
       font-size: 20px;

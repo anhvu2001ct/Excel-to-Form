@@ -28,12 +28,13 @@ function Modal({ file, close }: Props) {
       if (!workbookImport.name) throw new Error("Name can't be empty");
 
       workbookImport.description = workbookImport.description?.trim();
-      if (!workbookImport.description) throw new Error("Description can't be empty");
+      if (!workbookImport.description)
+        throw new Error("Description can't be empty");
 
       for (const sheet of workbookImport.sheets) {
         if (!sheet.valid) throw new Error("Input is not valid");
       }
-      
+
       const response = await fetch(endPoint("submit"), {
         method: "POST",
         body: JSON.stringify(workbookImport),
@@ -42,6 +43,7 @@ function Modal({ file, close }: Props) {
         },
       });
       const data = await response.json();
+      console.log("hanleSubmit ~ data", data);
       if (!response.ok) throw new Error(data.message);
       add("success", "Created successfully");
       modalEvent.emit();

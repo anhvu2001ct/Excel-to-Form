@@ -16,6 +16,7 @@ export default function Dropdown({ list, onClick }: Props) {
         <ul className={`dropdown ${show ? "active" : ""} `}>
           {list.map((item, index) => (
             <li
+              key={index}
               className="dropdown-item dropdown-item--danger"
               onClick={() => onClick(index)}
             >
