@@ -37,6 +37,10 @@
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
+      transition: 0.3s;
+      &:hover {
+        background-color: rgb(182 212 224 / 15%);
+      }
       i {
         cursor: pointer;
         transform: rotate(90deg);

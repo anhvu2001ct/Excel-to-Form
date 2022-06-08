@@ -22,6 +22,10 @@
       color: #475c74;
       background-color: #eef4fc;
       font-weight: 600;
+      &:last-child {
+        color: white;
+        background-color: #766ae6;
+      }
     }
     & table td .sheet-table-content {
       max-height: 300px;

@@ -3,6 +3,8 @@
   top: 0;
 
   &-container {
+    position: relative;
+    z-index: 2;
     padding: 0 18px;
     max-width: 230px;
     width: 100%;
