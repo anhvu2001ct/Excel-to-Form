@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route index element={<Home />} />
         <Route path="workbook/:id" element={<WorkbookDetail />} />
         <Route path="dashboard" element={<WIPComponent />} />
-        <Route path="About" element={<WIPComponent />} />
+        <Route path="About" element={<About />} />
         <Route path="Feedback" element={<WIPComponent />} />
         <Route path="*" element={<NotFound />}></Route>
       </Route>
