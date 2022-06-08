@@ -7,11 +7,13 @@ const Navigate = () => {
   return (
     <>
       <div className="navigate-container">
-        <img srcSet={`${logo} 2x`} alt="" className="navigate-logo" />
-        <div>
-          <NavigateMain />
-          <hr></hr>
-          <NavigateBottom />
+        <div className="navigate">
+          <img srcSet={`${logo} 2x`} alt="" className="navigate-logo" />
+          <div>
+            <NavigateMain />
+            <hr></hr>
+            <NavigateBottom />
+          </div>
         </div>
       </div>
     </>

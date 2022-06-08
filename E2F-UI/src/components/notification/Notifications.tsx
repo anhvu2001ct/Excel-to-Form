@@ -16,15 +16,12 @@ const Notifications = () => {
 
   const counter = useRef(0);
   add = (type: Props["type"], message: Props["message"]) => {
-    console.log("add started");
-
     let id = ++counter.current;
     setNotifications((prevState) => {
       return { ...prevState, [id]: { type, message } };
     });
     setTimeout(() => {
       setNotifications((prev) => {
-        console.log("set Noti ");
         const newState = { ...prev };
         delete newState[id];
         return newState;

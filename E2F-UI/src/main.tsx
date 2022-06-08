@@ -17,8 +17,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
         <Route path="workbook/:id" element={<WorkbookDetail />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="About" element={<About />} />
+        <Route path="dashboard" element={<WIPComponent />} />
+        <Route path="About" element={<WIPComponent />} />
         <Route path="Feedback" element={<WIPComponent />} />
         <Route path="*" element={<NotFound />}></Route>
       </Route>

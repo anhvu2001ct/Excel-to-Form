@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { FormEventHandler, memo, useRef, useState } from "react";
 import { sheetEnpoint } from "../../fetchingAPI/fetchingApi";
 import { SheetColumn } from "../../types/Wordbook";
 import Button from "../common/button/btnPrimary/Button";
@@ -20,12 +20,12 @@ export default memo(function Form({
   workbookId,
   onSubmit,
 }: Props) {
-  const ref = useRef<any>();
   const [errorForm, setErrorForm] = useState<string[]>([]);
-  console.log("errorForm", errorForm);
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
-      const formData = new FormData(ref.current);
+      e.preventDefault();
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
       if (errorForm.length > 0) {
         return;
       }
@@ -37,9 +37,9 @@ export default memo(function Form({
         }
       );
       const result = await response.json();
-      add("success", "Data already added succecssfully");
-
       if (!response.ok) throw new Error(result.message);
+      add("success", "Data added succecssfully");
+      form.reset();
       onSubmit();
     } catch (error) {
       add("error", error as string);
@@ -100,12 +100,8 @@ export default memo(function Form({
   }
   return (
     <form
-      ref={ref}
       className="sheet-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
+      onSubmit={handleSubmit}
     >
       {columns.map((item, index) => renderComponent(item, index))}
       <div className="btn-form-container">

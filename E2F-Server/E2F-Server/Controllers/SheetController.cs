@@ -104,6 +104,30 @@ namespace E2F_Server.Controllers
             catch
             {
                 return StatusCode(500, new
+                { 
+                    status = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
+        [HttpDelete("delete/{workbookId:int}/{sheetId:int}/{rowId:int}")]
+        public async Task<IActionResult> DeleteRowById(int workbookId, int sheetId,int rowId)
+        {
+            try
+            {
+                var structure = await WorkbookHelper.GetStructure(workbookId);
+                var tblName = structure.Order[sheetId];
+                await Program.Sql.ExecuteAsync($"delete from {tblName} where Id=@rowId", new { rowId });
+
+                return Ok(new
+                {
+                    status = true,
+                    message = $"Deleted row by id={rowId}"
+                });
+            }
+            catch 
+            {
+                return StatusCode(500, new
                 {
                     status = false,
                     message = "Your request was not successful :("

@@ -1,15 +1,16 @@
 import CardItem from "./CardItem";
 import "./Card.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Workbook } from "../../types/Wordbook";
 import { modalEvent } from "../modal/Modal";
-import { deleteEvent } from "../common/dropdown/Dropdown";
+import { workbookEnpoint } from "../../fetchingAPI/fetchingApi";
+import { add } from "../notification/Notifications";
 type Props = {
   search: string;
 };
 export default function Cards({ search }: Props) {
   const [workbooks, setWorkbooks] = useState<Workbook[]>([]);
-
+  const deleteData = useRef<(id: number) => void>();
   useEffect(() => {
     const loadData = async () => {
       const response = fetch(`http://localhost:5121/api/v1/workbook/get/all`)
@@ -18,11 +19,24 @@ export default function Cards({ search }: Props) {
           setWorkbooks(data.message);
         });
     };
-    deleteEvent.subscribe(loadData);
+    deleteData.current = async (id: number) => {
+      try {
+        const response = await fetch(workbookEnpoint + `/delete/${id}`, {
+          method: "DELETE",
+        });
+        const data = await response.json();
+        console.log("deleteData ~ data", data);
+        if (!response.ok) throw new Error(data.message);
+        add("success", "Deleted successful");
+      } catch (error) {
+        const e = error as Error;
+        add("error", e.message);
+      }
+      loadData();
+    };
     modalEvent.subscribe(loadData);
     return () => {
       modalEvent.unSubscribe(loadData);
-      deleteEvent.unSubscribe(loadData);
     };
   }, []);
 
@@ -52,7 +66,9 @@ export default function Cards({ search }: Props) {
   return (
     <div className="card-container">
       {workbooks.map((item) => {
-        return <CardItem key={item.id} {...item} />;
+        return (
+          <CardItem key={item.id} {...item} onDelete={deleteData.current!} />
+        );
       })}
     </div>
   );

@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import { sheetEnpoint } from "../../fetchingAPI/fetchingApi";
-import { Sheet } from "../../types/Wordbook";
+import { Sheet, SheetRow } from "../../types/Wordbook";
 import Input from "../common/search/Input";
 import Select from "../common/select/Select";
 import Separator from "../common/separator/Separator";
 import Table from "../common/table/Table";
 import Form from "../Form/Form";
+import { add } from "../notification/Notifications";
 
 type Props = {
   sheet: Sheet;
@@ -14,7 +15,7 @@ type Props = {
 };
 export default function SheetDetail({ sheet, index, workbookId }: Props) {
   const [active, setActive] = useState(false);
-  const [sheetData, setSheetData] = useState<string[][]>();
+  const [sheetData, setSheetData] = useState<SheetRow[]>();
   const searchDataRef = useRef<[string, string]>(["", ""]);
   let searchData = searchDataRef.current;
 
@@ -50,6 +51,25 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
     });
   };
 
+  const deleteData = async (rowId: number) => {
+    try {
+      const response = await fetch(
+        sheetEnpoint + `/delete/${workbookId}/${index}/${rowId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+      console.log("deleteData ~ data", data);
+      if (!response.ok) throw new Error(data.message);
+      add("success", "Deleted successful");
+    } catch (error) {
+      const e = error as Error;
+      add("error", e.message);
+    }
+    updateData();
+  };
+
   const handleSearchData = (pattern: string, column: string) => {
     searchDataRef.current = [pattern, column];
     searchData = searchDataRef.current;
@@ -67,12 +87,19 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
           <div className="sheet-detail-search">
             <Input onSearch={(str) => handleSearchData(str, searchData[1])} />
             <Select
-              addtional={["Select filter column", ...sheet.columns.map((item) => item.name)]}
+              addtional={[
+                "Select filter column",
+                ...sheet.columns.map((item) => item.name),
+              ]}
               dataKeys={["", ...sheet.columns.map((item) => item.id)]}
               onChange={(str) => handleSearchData(searchData[0], str)}
             />
           </div>
-          <Table columns={sheet.columns} sheetData={sheetData} />
+          <Table
+            columns={sheet.columns}
+            sheetData={sheetData}
+            onRemove={deleteData}
+          />
           <Separator title="Form" />
           <Form
             workbookId={workbookId}

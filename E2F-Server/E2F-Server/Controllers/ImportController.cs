@@ -95,7 +95,7 @@ namespace E2F_Server.Controllers
                     return Ok(new
                     {
                         success = true,
-                        message = new { res.Valid, res.Cord }
+                        message = new { res.Valid, res.Cord, res.Fields }
                     });
                 }
             }

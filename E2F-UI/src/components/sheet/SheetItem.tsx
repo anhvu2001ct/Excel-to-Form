@@ -28,7 +28,7 @@ const SheetItem = ({ index }: Props) => {
           "Content-Type": "application/json",
         },
       });
-      const result: ResultType<{ valid: boolean; cord: SheetCord }> =
+      const result: ResultType<{ valid: boolean; cord: SheetCord; fields: string[] }> =
         await response.json();
 
       if (!response.ok) throw new Error(result.message as any);
