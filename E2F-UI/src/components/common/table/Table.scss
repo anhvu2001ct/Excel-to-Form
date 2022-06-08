@@ -7,18 +7,19 @@
     border-radius: 8px;
     & table {
       width: 100%;
+      & thead tr {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
     }
     & table th,
     table td {
       padding: 15px;
       text-align: left;
       vertical-align: middle;
-      background-color: white;
     }
     & table th {
-      position: sticky;
-      top: 0;
-      z-index: 10;
       color: #475c74;
       background-color: #eef4fc;
       font-weight: 600;
@@ -28,24 +29,30 @@
       }
     }
     & table td .sheet-table-content {
-      max-height: 300px;
+      word-break: break-word;
+      max-height: 200px;
+      max-width: 200px;
       overflow-y: auto;
       overflow-x: hidden;
     }
     & table tbody tr {
-      cursor: pointer;
       border-top: 1px solid #f0f4f8;
       transition: 0.25s;
-      &:nth-child(even) {
-        background-color: #f6f9fc;
+      background-color: white;
+      &:hover {
+        background-color: rgba(200, 200, 200, 0.15);
+        .sheet-table-action {
+          background-color: transparent;
+        }
       }
     }
   }
 }
 .sheet-table {
   &-action {
-    max-width: 100px;
-    width: 100px;
+    transition: 0.25s;
+    background-color: white;
+    width: 50px;
     & .dropdown {
       left: 0;
       transform: translate(-105%);

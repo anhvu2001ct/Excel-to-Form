@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import logo from "../../data/img/logo-img.png";
 import "./Navigate.scss";
 import NavigateBottom from "./NavigateBottom";
@@ -8,7 +8,9 @@ const Navigate = () => {
     <>
       <div className="navigate-container">
         <div className="navigate">
-          <img srcSet={`${logo} 2x`} alt="" className="navigate-logo" />
+          <Link to="/">
+            <img srcSet={`${logo} 2x`} alt="" className="navigate-logo" />
+          </Link>
           <div>
             <NavigateMain />
             <hr></hr>

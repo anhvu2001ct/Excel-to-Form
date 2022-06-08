@@ -18,7 +18,7 @@ export default function Input({ onSearch }: Props) {
           type="text"
           id={cid}
           className="search-input"
-          placeholder="Search...."
+          placeholder="Search by name...."
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
