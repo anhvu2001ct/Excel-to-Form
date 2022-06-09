@@ -50,7 +50,7 @@ namespace E2F_Server.Utilities
         public static async Task<string> Upload(IFormFile file)
         {
             var fileBytes = await ToBytes(file.OpenReadStream());
-            var res = await Program.Imagekit.Folder("/E2Form/").FileName(file.FileName).UploadAsync(fileBytes);
+            var res = await Program.Imagekit.Folder("/E2F/").FileName(file.FileName).UploadAsync(fileBytes);
             return res.URL;
         }
 
