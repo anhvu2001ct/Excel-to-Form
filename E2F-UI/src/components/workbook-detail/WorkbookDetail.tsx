@@ -69,7 +69,6 @@ const WorkbookDetail = () => {
             </div>
             <div className="workbook-top-date">
               <img srcSet={DateIcon} alt="" className="workbook-top-icon" />
-              <span>:</span>
               <span className="workbook-top-text">{workbook?.createdAt}</span>
             </div>
           </div>

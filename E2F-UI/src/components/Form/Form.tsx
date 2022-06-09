@@ -1,13 +1,12 @@
-import { FormEventHandler, memo, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import { sheetEnpoint } from "../../fetchingAPI/fetchingApi";
+import { ObjectType } from "../../types/common";
 import { SheetColumn } from "../../types/Wordbook";
 import Button from "../common/button/btnPrimary/Button";
-import Date from "../common/date/Date";
-import InputForm from "../common/input/InputForm";
-import Select from "../common/select/Select";
-import Textarea from "../common/textarea/Textarea";
 import { add } from "../notification/Notifications";
+import RenderField from "../renderField/RenderField";
 import "./Form.scss";
+
 type Props = {
   sheetId: number;
   workbookId: number;
@@ -20,15 +19,14 @@ export default memo(function Form({
   workbookId,
   onSubmit,
 }: Props) {
-  const [errorForm, setErrorForm] = useState<string[]>([]);
+  const dataValid = useRef<ObjectType<boolean>>({});
+
   const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
-      if (errorForm.length > 0) {
-        return;
-      }
+      if (Object.keys(dataValid.current).length) return;
       const response = await fetch(
         sheetEnpoint + `/add/${workbookId}/${sheetId}/`,
         {
@@ -46,64 +44,15 @@ export default memo(function Form({
     }
   };
 
-  function renderComponent(sheetCol: SheetColumn, index: number) {
-    switch (sheetCol.type) {
-      case "text":
-        return (
-          <InputForm
-            error={errorForm!}
-            setErrorForm={setErrorForm}
-            type={sheetCol.type}
-            key={index}
-            title={sheetCol.name}
-            id={sheetCol.id}
-          />
-        );
-      case "select":
-        return (
-          <Select
-            key={index}
-            title={sheetCol.name}
-            addtional={sheetCol.additional as string[]}
-            id={sheetCol.id}
-          />
-        );
-      case "area":
-        return <Textarea title={sheetCol.name} key={index} id={sheetCol.id} />;
-      case "phone":
-        return (
-          <InputForm
-            error={errorForm!}
-            setErrorForm={setErrorForm}
-            type={sheetCol.type}
-            key={index}
-            title={sheetCol.name}
-            id={sheetCol.id}
-          />
-        );
-      case "email":
-        return (
-          <InputForm
-            error={errorForm!}
-            setErrorForm={setErrorForm}
-            type={sheetCol.type}
-            key={index}
-            title={sheetCol.name}
-            id={sheetCol.id}
-          />
-        );
-      case "date":
-        return <Date key={index} title={sheetCol.name} id={sheetCol.id} />;
-      default:
-        return null;
-    }
-  }
   return (
-    <form
-      className="sheet-form"
-      onSubmit={handleSubmit}
-    >
-      {columns.map((item, index) => renderComponent(item, index))}
+    <form className="sheet-form" onSubmit={handleSubmit}>
+      {columns.map((item, index) => (
+        <RenderField
+          key={index}
+          sheetCol={item}
+          validateObj={dataValid.current}
+        />
+      ))}
       <div className="btn-form-container">
         <Button title="Save" isFormSubmit={true} />
       </div>

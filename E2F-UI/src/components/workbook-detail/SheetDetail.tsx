@@ -51,25 +51,6 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
     });
   };
 
-  const deleteData = async (rowId: number) => {
-    try {
-      const response = await fetch(
-        sheetEnpoint + `/delete/${workbookId}/${index}/${rowId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      console.log("deleteData ~ data", data);
-      if (!response.ok) throw new Error(data.message);
-      add("success", "Deleted successful");
-    } catch (error) {
-      const e = error as Error;
-      add("error", e.message);
-    }
-    updateData();
-  };
-
   const handleSearchData = (pattern: string, column: string) => {
     searchDataRef.current = [pattern, column];
     searchData = searchDataRef.current;
@@ -101,7 +82,9 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
           <Table
             columns={sheet.columns}
             sheetData={sheetData}
-            onRemove={deleteData}
+            refreshData={updateData}
+            workbookId={workbookId}
+            sheetId={index}
           />
           <Separator title="Form" />
           <Form

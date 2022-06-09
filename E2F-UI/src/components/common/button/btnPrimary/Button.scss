@@ -8,10 +8,17 @@
   background-color: white;
   &-primary {
     background-color: #2979ff;
+    &:hover {
+      background-color: rgba(41, 121, 255, 0.9);
+    }
   }
   &-secondary {
-    border: 1px solid #2979ff;
-    color: #2979ff;
+    color: black;
+    border: 1px solid var(--border-color);
+    &:hover {
+      color: rgba(41, 121, 255, 0.7);
+      border: 1px solid #2979ff;
+    }
   }
   &-third {
     padding: 10px 30px;
