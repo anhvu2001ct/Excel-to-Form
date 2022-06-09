@@ -10,7 +10,8 @@ namespace E2F_Server.Controllers
     public class ImportController : BaseController
     {
         [HttpPost("sheet")]
-        [RequestFormLimits(ValueLengthLimit = Constraint.MAX_UPLOAD, MultipartBodyLengthLimit = Constraint.MAX_UPLOAD)]
+        [RequestSizeLimit(int.MaxValue)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<IActionResult> UploadSheet(IFormFile file)
         {
             try
@@ -19,6 +20,12 @@ namespace E2F_Server.Controllers
                 {
                     success = false,
                     message = Constraint.GetExtErrorMsg(Constraint.ACCEPT_EXT_SHEET)
+                });
+
+                if (file.Length > Constraint.MAX_EXCEL_UPLOAD) return BadRequest(new
+                {
+                    success = false,
+                    message = Constraint.GetFileSizeErrorMsg(Constraint.MAX_EXCEL_UPLOAD)
                 });
 
                 var res = await WorkbookHelper.GetWorkbookPreImport(file);

@@ -3,7 +3,7 @@
     public static class Constraint {
         public const int MAX_IMG_UPLOAD = 5000000;
 
-        public const int MAX_UPLOAD = 50000000;
+        public const int MAX_EXCEL_UPLOAD = 50000000;
 
         public const string NANOID_ALLOWED_STR = "zqaxwscedvrfbtgyhnujmiklop_1234567890";
 
@@ -20,6 +20,11 @@
         public static string GetExtErrorMsg(string[] ext)
         {
             return $"Only support file of types [{string.Join(", ", ext)}]";
+        }
+
+        public static string GetFileSizeErrorMsg(int maximum)
+        {
+            return $"File size exceeded {maximum / 1000000}Mb!";
         }
     }
 }
