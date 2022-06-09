@@ -83,7 +83,7 @@ namespace E2F_Server.Controllers
         }
 
         [HttpDelete("delete/{id:int}")]
-        public async Task<IActionResult> DeleteByID(int id)
+        public async Task<IActionResult> DeleteById(int id)
         {
             try
             {
@@ -105,5 +105,57 @@ namespace E2F_Server.Controllers
             }
         }
 
+        [HttpPost("edit/{workbookId:int}")]
+        public async Task<IActionResult> EditById(int workbookId, IFormCollection form)
+        {
+            try
+            {
+                var parameters = new DynamicParameters();
+                var file = form.Files.GetFile("image");
+                if (file != null)
+                {
+                    if (!Util.IsExtAccepted(file.FileName, Constraint.ACCEPT_EXT_IMG)) return BadRequest(new
+                    {
+                        success = false,
+                        message = Constraint.GetExtErrorMsg(Constraint.ACCEPT_EXT_IMG)
+                    });
+
+                    if (file.Length > Constraint.MAX_IMG_UPLOAD) return BadRequest(new
+                    {
+                        success = false,
+                        message = "Image size exceed 5MB!"
+                    });
+
+                    parameters.Add("Url", await Util.Upload(file));
+                }
+
+                if (form.ContainsKey("name")) parameters.Add("Name", form["name"].First());
+                if (form.ContainsKey("description")) parameters.Add("Description", form["description"].First());
+
+                if (!parameters.ParameterNames.Any()) return BadRequest(new
+                {
+                    success = false,
+                    message = "No params found to perform edit"
+                });
+
+                var query = SqlHelper.GetUpdateQuery("Workbook", "Id", parameters.ParameterNames.ToArray());
+                parameters.Add("Id", workbookId);
+                await Program.Sql.ExecuteAsync(query, parameters);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Edited workbook with Id={workbookId}"
+                });
+            }
+            catch
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
     }
 }
