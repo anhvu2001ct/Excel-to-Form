@@ -4,7 +4,7 @@ import Button from "../common/button/btnPrimary/Button";
 import Breadcrumb from "../common/breadcrumb";
 import { useEffect, useState } from "react";
 import { exportEnpoint, workbookEnpoint } from "../../fetchingAPI/fetchingApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Workbook } from "../../types/Wordbook";
 import LoadingCircle from "../loading/LoadingCircle";
 import SheetDetail from "./SheetDetail";
@@ -14,7 +14,9 @@ import DefaultImage from "../../data/img/default-img.webp";
 const WorkbookDetail = () => {
   const [workbook, setWorkbook] = useState<Workbook>();
   const { id: workbookId } = useParams();
+  const navigate = useNavigate();
   let loading = !workbook;
+
   useEffect(() => {
     async function GetDetail() {
       const params = new URLSearchParams();
@@ -24,21 +26,24 @@ const WorkbookDetail = () => {
       });
       try {
         const data = await response.json();
-        if (data.ok) throw new Error(data.message);
+        if (!response.ok) throw new Error(data.message);
         const result = data.message;
         setWorkbook(result);
       } catch (error) {
-        console.log(error);
+        navigate("/notfound", { replace: true });
       }
     }
     GetDetail();
   }, []);
+
   const handleExportingOrigin = () => {
     window.location.assign(exportEnpoint + `/origin/${workbookId}`);
   };
+
   const handleExportingFullData = () => {
     window.location.assign(exportEnpoint + `/full/${workbookId}`);
   };
+
   return (
     <>
       {loading && <LoadingCircle />}

@@ -85,6 +85,7 @@ const EditCard = ({ onClose, workbookUpdate }: IProps) => {
             <input
               type="file"
               name="edit-image"
+              accept="image/*"
               id="edit-image"
               onChange={changeImage}
             />
