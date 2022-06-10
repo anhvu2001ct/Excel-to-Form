@@ -51,25 +51,6 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
     });
   };
 
-  const deleteData = async (rowId: number) => {
-    try {
-      const response = await fetch(
-        sheetEnpoint + `/delete/${workbookId}/${index}/${rowId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-      console.log("deleteData ~ data", data);
-      if (!response.ok) throw new Error(data.message);
-      add("success", "Deleted successful");
-    } catch (error) {
-      const e = error as Error;
-      add("error", e.message);
-    }
-    updateData();
-  };
-
   const handleSearchData = (pattern: string, column: string) => {
     searchDataRef.current = [pattern, column];
     searchData = searchDataRef.current;
@@ -85,7 +66,10 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
       <div className={`sheet-main ${active ? "active" : ""}`}>
         <div className="sheet-main-content">
           <div className="sheet-detail-search">
-            <Input onSearch={(str) => handleSearchData(str, searchData[1])} />
+            <Input
+              placeholder="Search by content..."
+              onSearch={(str) => handleSearchData(str, searchData[1])}
+            />
             <Select
               addtional={[
                 "Select filter column",
@@ -98,7 +82,9 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
           <Table
             columns={sheet.columns}
             sheetData={sheetData}
-            onRemove={deleteData}
+            refreshData={updateData}
+            workbookId={workbookId}
+            sheetId={index}
           />
           <Separator title="Form" />
           <Form

@@ -1,23 +1,30 @@
+import { ButtonHTMLAttributes, ReactNode } from "react";
+import Spinner from "../../../loading/Spinner";
 import "./Button.scss";
-type Props = {
-  title: string;
+interface IProps {
+  children: ReactNode;
   type?: "primary" | "secondary" | "third";
   isFormSubmit?: boolean;
+  isLoading?: boolean;
   onClick?: () => void;
-};
+}
 const Button = ({
-  title,
+  children,
   type = "primary",
   isFormSubmit = false,
   onClick,
-}: Props) => {
+  ...props
+}: IProps) => {
+  const { isLoading } = props;
+  const child = !!isLoading ? <Spinner /> : children;
   return (
     <button
       type={isFormSubmit ? "submit" : "button"}
       className={`btn btn-${type}`}
+      disabled={isLoading}
       onClick={onClick}
     >
-      {title}
+      {child}
     </button>
   );
 };

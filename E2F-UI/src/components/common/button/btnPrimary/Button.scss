@@ -1,19 +1,32 @@
 .btn {
   outline: none;
-  padding: 10px 50px;
+  height: 45px;
+  width: 120px;
   border: none;
   color: white;
   border-radius: 4px;
   cursor: pointer;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &-primary {
     background-color: #2979ff;
+    &:hover {
+      background-color: rgba(41, 121, 255, 0.9);
+    }
   }
   &-secondary {
-    border: 1px solid #2979ff;
-    color: #2979ff;
+    color: black;
+    border: 1px solid var(--border-color);
+    &:hover {
+      color: rgba(41, 121, 255, 0.7);
+      border: 1px solid #2979ff;
+    }
   }
   &-third {
+    width: max-content;
+    height: max-content;
     padding: 10px 30px;
     color: var(--primary-color);
     box-shadow: inset 0px 0px 0px 1px var(--primary-color);
@@ -24,6 +37,8 @@
     }
   }
   transition: 0.25s;
-  &:hover {
+  &:disabled {
+    opacity: 0.7;
+    pointer-events: none;
   }
 }

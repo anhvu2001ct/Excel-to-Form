@@ -4,9 +4,13 @@ import "./Input.scss";
 
 type Props = {
   onSearch: (name: string) => void;
+  placeholder?: string;
 };
 
-export default function Input({ onSearch }: Props) {
+export default function Input({
+  onSearch,
+  placeholder = "Search by name....",
+}: Props) {
   const cid = useRef(genHTMLId()).current;
   return (
     <>
@@ -18,7 +22,7 @@ export default function Input({ onSearch }: Props) {
           type="text"
           id={cid}
           className="search-input"
-          placeholder="Search by name...."
+          placeholder={placeholder}
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>

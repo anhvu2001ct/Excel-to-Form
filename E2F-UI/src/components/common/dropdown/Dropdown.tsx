@@ -3,8 +3,11 @@ import useClickOutSide from "../../../hooks/useClickOutSide";
 import "./Dropdown.scss";
 
 type Props = {
-  list: ReactNode[];
-  onClick: (clickPos: number) => void;
+  list: {
+    type: "danger" | "normal";
+    title: string;
+  }[];
+  onClick: (clickPos: number, title: string) => void;
 };
 
 export default function Dropdown({ list, onClick }: Props) {
@@ -17,10 +20,12 @@ export default function Dropdown({ list, onClick }: Props) {
           {list.map((item, index) => (
             <li
               key={index}
-              className="dropdown-item dropdown-item--danger"
-              onClick={() => onClick(index)}
+              className={`dropdown-item ${
+                item.type === "danger" ? "dropdown-item--danger" : ""
+              } `}
+              onClick={() => onClick(index, item.title)}
             >
-              {item}
+              {item.title}
             </li>
           ))}
         </ul>

@@ -7,6 +7,7 @@ interface Props {
   addtional?: string[];
   dataKeys?: string[];
   onChange?: (s: string) => void;
+  value?: string;
 }
 export default memo(function Select({
   title,
@@ -14,6 +15,7 @@ export default memo(function Select({
   addtional,
   dataKeys,
   onChange,
+  value,
 }: Props) {
   const cid = useRef(genHTMLId()).current;
   return (
@@ -31,6 +33,7 @@ export default memo(function Select({
           onChange={(e) => {
             if (onChange) onChange(e.target.value);
           }}
+          defaultValue={value}
         >
           {addtional?.map((item, index) => (
             <option key={index} value={dataKeys ? dataKeys[index] : item}>
@@ -40,19 +43,5 @@ export default memo(function Select({
         </select>
       </div>
     </>
-    // <div className={`select-container ${show ? "show" : ""} `} ref={nodeRef}>
-    //   <span className="label">{title}</span>
-    //   <div className="selected" onClick={(e) => setShow(!show)}>
-    //     <span ref={spanRef}>{"Please choice your content"}</span>
-    //     <i className="fas fa-caret-right"></i>
-    //   </div>
-    //   <ul className={`select-list`}>
-    //     {addtional.map((item) => (
-    //       <li onClick={(e) => handleClick(e, item)} key={item}>
-    //         {item}
-    //       </li>
-    //     ))}
-    //   </ul>
-    // </div>
   );
 });

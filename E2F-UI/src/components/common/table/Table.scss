@@ -24,8 +24,7 @@
       background-color: #eef4fc;
       font-weight: 600;
       &:last-child {
-        color: white;
-        background-color: #766ae6;
+        color: var(--red);
       }
     }
     & table td .sheet-table-content {
@@ -41,22 +40,21 @@
       background-color: white;
       &:hover {
         background-color: rgba(200, 200, 200, 0.15);
-        .sheet-table-action {
-          background-color: transparent;
-        }
       }
     }
   }
 }
 .sheet-table {
+  &-header {
+    min-width: 100px;
+  }
   &-action {
     transition: 0.25s;
     background-color: white;
     width: 50px;
     & .dropdown {
       left: 0;
-      transform: translate(-105%);
-      bottom: 0;
+      transform: translate(-100%, 10%);
     }
     &--item {
       display: flex;

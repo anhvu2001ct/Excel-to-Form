@@ -78,3 +78,17 @@
   padding: 2px 5px;
   text-align: center;
 }
+.workbook {
+  &-top {
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    &-date {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+}

@@ -4,8 +4,9 @@ import "./Textarea.scss";
 interface Props {
   title: string;
   id: string;
+  value?: string;
 }
-export default function Textarea({ title, id }: Props) {
+export default function Textarea({ title, id, value }: Props) {
   const cid = useRef(genHTMLId()).current;
   return (
     <div className="textarea-container">
@@ -17,6 +18,7 @@ export default function Textarea({ title, id }: Props) {
         rows={4}
         className="textarea-content"
         placeholder="Enter yout content "
+        defaultValue={value}
       ></textarea>
     </div>
   );

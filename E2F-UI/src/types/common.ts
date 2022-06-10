@@ -3,3 +3,7 @@ export type ResultType<T> = {
   status: number;
   message: T;
 };
+
+export type ObjectType<T> = {
+  [key: string]: T;
+};
