@@ -65,6 +65,12 @@ namespace E2F_Server.Controllers
                 int startColNum = SheetHelper.ColumnNameToNumber(startCol);
                 int endColNum = SheetHelper.ColumnNameToNumber(endCol);
 
+                if (rowIndex < 1) return BadRequest(new
+                {
+                    success = false,
+                    message = "Row index must be a positive integer"
+                });
+
                 if (startColNum > endColNum)
                 {
                     (startCol, endCol) = (endCol, startCol);

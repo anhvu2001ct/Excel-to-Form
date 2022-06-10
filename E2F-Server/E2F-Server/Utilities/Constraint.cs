@@ -9,7 +9,7 @@
 
         public const short NANOID_LENGTH = 16;
 
-        public static readonly string[] ACCEPT_EXT_IMG = {".jpg", ".jpeg", ".png"};
+        public static readonly string[] ACCEPT_EXT_IMG = {".jpg", ".jpeg", ".png", ".webp"};
 
         public static readonly string[] ACCEPT_EXT_SHEET = {".xlsx"};
 

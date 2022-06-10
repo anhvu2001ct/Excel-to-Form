@@ -34,7 +34,7 @@ namespace E2F_Server.Utilities
                     RowIndex = rowIndex
                 }
             };
-            UpdateSheet(sheet, res, startCol, endCol);
+            if (sheet.Dimension.End.Row >= rowIndex) UpdateSheet(sheet, res, startCol, endCol);
             return res;
         }
 
