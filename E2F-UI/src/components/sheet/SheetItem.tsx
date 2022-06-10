@@ -53,7 +53,6 @@ const SheetItem = ({ index }: Props) => {
         return newState;
       });
       setLoading(false);
-      add("error", (error as Error).message);
     }
   };
 

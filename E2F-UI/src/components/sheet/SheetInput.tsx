@@ -19,22 +19,22 @@ const SheetInput = ({ title, placeHolder, type, index, cordType }: Props) => {
         type={type ?? "text"}
         className="sheet-input-number"
         placeholder={placeHolder}
-        value={sheet.cord[cordType] ?? ""}
+        value={sheet.cord[cordType]?.toString() ?? ""}
         min="1"
         onChange={(e) => {
-          if (
-            !type &&
-            e.target.value.length &&
-            (e.target.value.length > 3 ||
-              /^[a-zA-Z]+$/.test(e.target.value) == false)
-          )
-            return;
+          if (e.target.value.length) {
+            if (
+              (!type || type === "text") &&
+              (e.target.value.length > 3 ||
+                /^[a-zA-Z]+$/.test(e.target.value) == false)
+            )
+              return;
+            if (type === "number" && /^[0-9]+$/.test(e.target.value) == false)
+              return;
+          }
           setWorkbookImport((old) => {
             const value =
-              type === "number"
-                ? parseInt(e.target.value) ||
-                  parseInt(old.sheets[index].cord[cordType] as any)
-                : e.target.value;
+              type === "number" ? parseInt(e.target.value) : e.target.value;
             const newState = { ...old };
             newState.sheets[index].cord[cordType] = value as any;
             newState.sheets[index].valid = false;
