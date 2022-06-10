@@ -19,6 +19,7 @@ const EditSheetRow = ({ columns, rowData, onSave, onClose }: IProp) => {
   const handleSubmit = (e: React.FormEvent) => {
     if (Object.keys(dataValid.current).length) return;
     onSave(e, rowData.id);
+    onClose();
   };
 
   return ReactDom.createPortal(

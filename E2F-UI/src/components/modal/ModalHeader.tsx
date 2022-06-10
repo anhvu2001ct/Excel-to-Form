@@ -1,14 +1,10 @@
 import { useWorkbookImport } from "../../context/workbookImport-context";
-
+import DefaultImage from "../../data/img/default-img.webp";
 export default function ModalHeader() {
   const [workbookImport, setWorkbookImport] = useWorkbookImport();
   return (
     <div className="modal-top">
-      <img
-        src={"https://source.unsplash.com/random"}
-        alt="hinh"
-        className="modal-top-image"
-      />
+      <img src={DefaultImage} alt="hinh" className="modal-top-image" />
       <div className="modal-top-content">
         <div
           className={`modal-top-title ${

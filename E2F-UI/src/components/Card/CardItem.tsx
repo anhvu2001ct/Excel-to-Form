@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Avatar from "../../data/img/breadcurmb-img.png";
+import DefaultImage from "../../data/img/default-img.webp";
 import DateIcon from "../../data/img/calendar-icon.png";
 import { Workbook } from "../../types/Wordbook";
 import Dropdown from "../common/dropdown/Dropdown";
@@ -33,7 +33,7 @@ export default function CardItem({
     <div className="card-item">
       <Link to={`workbook/${id}`} className="card-item-detail" key={id}>
         <div className="card-img">
-          <img srcSet={url || Avatar} alt="" />
+          <img srcSet={url || DefaultImage} alt="" />
         </div>
         <div className="card-info">
           <div className="card-info-title">{name}</div>

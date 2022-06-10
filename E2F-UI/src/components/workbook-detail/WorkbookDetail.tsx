@@ -9,7 +9,7 @@ import { Workbook } from "../../types/Wordbook";
 import LoadingCircle from "../loading/LoadingCircle";
 import SheetDetail from "./SheetDetail";
 import DateIcon from "../../data/img/calendar-icon.png";
-import DefaultImage from "../../data/img/background-about.png";
+import DefaultImage from "../../data/img/default-img.webp";
 
 const WorkbookDetail = () => {
   const [workbook, setWorkbook] = useState<Workbook>();

@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import ReactDom from "react-dom";
-import DefaultImage from "../../data/img/background-about.png";
+import DefaultImage from "../../data/img/default-img.webp";
 import { workbookEnpoint } from "../../fetchingAPI/fetchingApi";
 import { ObjectType } from "../../types/common";
 import Button from "../common/button/btnPrimary/Button";
