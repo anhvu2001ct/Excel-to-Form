@@ -52,7 +52,7 @@ namespace E2F_Server.Utilities
             for (int i = start; i <= end; ++i)
             {
                 var cell = sheet.Cells[data.Cord.RowIndex, i];
-                var fieldName = cell.Text;
+                var fieldName = cell?.Text;
                 if (data.Cord.ColumnStart == null && !string.IsNullOrEmpty(fieldName))
                 {
                     data.Cord.ColumnStart = GetColumnFromAddress(cell.Address);
