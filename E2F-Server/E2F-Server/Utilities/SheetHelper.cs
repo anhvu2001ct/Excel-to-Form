@@ -48,8 +48,10 @@ namespace E2F_Server.Utilities
             var cells = sheet.Cells[$"{startCol}{data.Cord.RowIndex}:{endCol}{data.Cord.RowIndex}"];
             string? lastCell = null;
 
-            foreach (var cell in cells)
+            int start = ColumnNameToNumber(startCol), end = ColumnNameToNumber(endCol);
+            for (int i = start; i <= end; ++i)
             {
+                var cell = sheet.Cells[data.Cord.RowIndex, i];
                 var fieldName = cell.Text;
                 if (data.Cord.ColumnStart == null && !string.IsNullOrEmpty(fieldName))
                 {
