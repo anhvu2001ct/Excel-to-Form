@@ -7,6 +7,7 @@
     border-radius: 8px;
     & table {
       width: 100%;
+      min-height: 200px;
       & thead tr {
         position: sticky;
         top: 0;
@@ -35,6 +36,7 @@
       overflow-x: hidden;
     }
     & table tbody tr {
+      min-height: 100px;
       border-top: 1px solid #f0f4f8;
       transition: 0.25s;
       background-color: white;
