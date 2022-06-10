@@ -35,6 +35,11 @@ namespace E2F_Server.Utilities
                 }
             };
             if (sheet.Dimension.End.Row >= rowIndex) UpdateSheet(sheet, res, startCol, endCol);
+            if (!res.Valid)
+            {
+                res.Cord.ColumnStart = startCol;
+                res.Cord.ColumnEnd = endCol;
+            }
             return res;
         }
 
