@@ -106,6 +106,8 @@ namespace E2F_Server.Controllers
         }
 
         [HttpPost("edit/{workbookId:int}")]
+        [RequestSizeLimit(int.MaxValue)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         public async Task<IActionResult> EditById(int workbookId, IFormCollection form)
         {
             try
@@ -114,17 +116,17 @@ namespace E2F_Server.Controllers
                 var file = form.Files.GetFile("image");
                 if (file != null)
                 {
+                    if (file.Length > Constraint.MAX_IMG_UPLOAD) return BadRequest(new
+                    {
+                        success = false,
+                        message = Constraint.GetFileSizeErrorMsg(Constraint.MAX_IMG_UPLOAD)
+                    });
                     if (!Util.IsExtAccepted(file.FileName, Constraint.ACCEPT_EXT_IMG)) return BadRequest(new
                     {
                         success = false,
                         message = Constraint.GetExtErrorMsg(Constraint.ACCEPT_EXT_IMG)
                     });
 
-                    if (file.Length > Constraint.MAX_IMG_UPLOAD) return BadRequest(new
-                    {
-                        success = false,
-                        message = "Image size exceed 5MB!"
-                    });
 
                     parameters.Add("Url", await Util.Upload(file));
                 }

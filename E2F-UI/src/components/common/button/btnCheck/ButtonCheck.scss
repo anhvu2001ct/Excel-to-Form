@@ -1,10 +1,18 @@
 .btn-check {
   color: white;
-  padding: 10px 35px;
+  width: 120px;
+  height: 44px;
   border: 7px;
   align-self: flex-end;
   background-color: var(--green);
   border-radius: 3px;
-  transition: .3s;
+  transition: 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  &:disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
 }

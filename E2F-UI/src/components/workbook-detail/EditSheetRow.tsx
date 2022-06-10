@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ReactDom from "react-dom";
 import { ObjectType } from "../../types/common";
 import { SheetColumn, SheetRow } from "../../types/Wordbook";
@@ -16,7 +16,6 @@ interface IProp {
 const EditSheetRow = ({ columns, rowData, onSave, onClose }: IProp) => {
   if (typeof document === undefined) return null;
   const dataValid = useRef<ObjectType<boolean>>({});
-
   const handleSubmit = (e: React.FormEvent) => {
     if (Object.keys(dataValid.current).length) return;
     onSave(e, rowData.id);
@@ -41,8 +40,10 @@ const EditSheetRow = ({ columns, rowData, onSave, onClose }: IProp) => {
           ))}
         </div>
         <div className="edit-btn-wrapper">
-          <Button title="Save" isFormSubmit={true}></Button>
-          <Button title="Cancel" onClick={onClose} type="secondary"></Button>
+          <Button isFormSubmit={true}>Save</Button>
+          <Button onClick={onClose} type="secondary">
+            Cancel
+          </Button>
         </div>
       </div>
     </form>,

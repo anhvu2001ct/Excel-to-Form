@@ -1,11 +1,15 @@
 .btn {
   outline: none;
-  padding: 10px 50px;
+  height: 45px;
+  width: 120px;
   border: none;
   color: white;
   border-radius: 4px;
   cursor: pointer;
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &-primary {
     background-color: #2979ff;
     &:hover {
@@ -21,6 +25,8 @@
     }
   }
   &-third {
+    width: max-content;
+    height: max-content;
     padding: 10px 30px;
     color: var(--primary-color);
     box-shadow: inset 0px 0px 0px 1px var(--primary-color);
@@ -31,6 +37,8 @@
     }
   }
   transition: 0.25s;
-  &:hover {
+  &:disabled {
+    opacity: 0.7;
+    pointer-events: none;
   }
 }

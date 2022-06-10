@@ -18,7 +18,7 @@ export default function CardItem({
   createdAt,
   onDelete,
 }: Props) {
-  const [editModal, setEditModal] = useState(-1);
+  const [editModal, setEditModal] = useState(false);
   const workbookUpdate = {
     id,
     name,
@@ -26,11 +26,9 @@ export default function CardItem({
     url,
   };
   const handleAction = (index: number, workbookId: number) => {
-    console.log(index);
     if (index === 0) onDelete(id);
-    else if (index === 1) setEditModal(1);
+    else if (index === 1) setEditModal(true);
   };
-  const updateWorkBook = () => {};
   return (
     <div className="card-item">
       <Link to={`workbook/${id}`} className="card-item-detail" key={id}>
@@ -51,13 +49,12 @@ export default function CardItem({
           { title: "Delete", type: "danger" },
           { title: "Edit", type: "normal" },
         ]}
-        onClick={(index, title) => handleAction(index, id)}
+        onClick={(index) => handleAction(index, id)}
       ></Dropdown>
-      {editModal === 1 && (
+      {editModal && (
         <EditCard
-          onSave={updateWorkBook}
           workbookUpdate={workbookUpdate}
-          onClose={() => setEditModal(-1)}
+          onClose={() => setEditModal(false)}
         />
       )}
     </div>

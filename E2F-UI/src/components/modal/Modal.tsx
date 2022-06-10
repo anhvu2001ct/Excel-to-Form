@@ -43,7 +43,6 @@ function Modal({ file, close }: Props) {
         },
       });
       const data = await response.json();
-      console.log("hanleSubmit ~ data", data);
       if (!response.ok) throw new Error(data.message);
       add("success", "Created successfully");
       modalEvent.emit();
@@ -87,13 +86,14 @@ function Modal({ file, close }: Props) {
           <SheetsImport />
           <div className="btn-wrapper">
             <Button
-              title="Cancel"
               type="secondary"
               onClick={() => {
                 close();
               }}
-            ></Button>
-            <Button title="Create" onClick={hanleSubmit}></Button>
+            >
+              Cancel
+            </Button>
+            <Button onClick={hanleSubmit}>Create</Button>
           </div>
         </div>
       </div>

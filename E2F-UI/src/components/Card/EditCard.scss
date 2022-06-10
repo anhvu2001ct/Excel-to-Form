@@ -54,6 +54,7 @@
       justify-content: center;
       align-items: center;
       border-radius: 4px;
+      transition: 0.25s;
       input {
         outline: none;
         border: none;
@@ -62,6 +63,13 @@
         color: rgb(41, 121, 255);
         background-color: transparent;
         font-family: var(--primary-font);
+      }
+      &.error {
+        color: var(--red);
+        background-color: rgba(246, 38, 130, 0.3);
+        input {
+          color: inherit;
+        }
       }
     }
     &-desc {
@@ -76,6 +84,15 @@
       border: 1px solid var(--primary-color);
       flex-grow: 1;
       transition: 0.25s;
+      &.error {
+        border-color: var(--red);
+      }
     }
+  }
+  &-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
   }
 }

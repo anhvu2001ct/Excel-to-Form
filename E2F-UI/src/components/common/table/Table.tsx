@@ -61,7 +61,6 @@ export default function Table({
       if (!response.ok) throw new Error(data.message);
       refreshData();
       add("success", "Data Edited successfully");
-      setEditModal(-1);
     } catch (error) {
       const _error = error as Error;
       add("error", _error.message);

@@ -54,8 +54,7 @@
     width: 50px;
     & .dropdown {
       left: 0;
-      transform: translate(-100%, 50%);
-      bottom: 0;
+      transform: translate(-100%, 10%);
     }
     &--item {
       display: flex;

@@ -9,6 +9,7 @@ import { Workbook } from "../../types/Wordbook";
 import LoadingCircle from "../loading/LoadingCircle";
 import SheetDetail from "./SheetDetail";
 import DateIcon from "../../data/img/calendar-icon.png";
+import DefaultImage from "../../data/img/background-about.png";
 
 const WorkbookDetail = () => {
   const [workbook, setWorkbook] = useState<Workbook>();
@@ -44,21 +45,17 @@ const WorkbookDetail = () => {
       <div className="workbook-header">
         <Breadcrumb pages={["Home", "Detail"]} links={["", ""]} />
         <div>
-          <Button
-            type="third"
-            title="Export origin"
-            onClick={handleExportingOrigin}
-          />
-          <Button
-            type="third"
-            title="Export workbook"
-            onClick={handleExportingFullData}
-          />
+          <Button type="third" onClick={handleExportingOrigin}>
+            Export origin
+          </Button>
+          <Button type="third" onClick={handleExportingFullData}>
+            Export workbook
+          </Button>
         </div>
       </div>
       <div className="modal-top">
         <img
-          src={workbook?.url || "https://source.unsplash.com/random"}
+          src={workbook?.url || DefaultImage}
           alt="hinh"
           className="modal-top-image modal-top-image--detail"
         />

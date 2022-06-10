@@ -1,0 +1,10 @@
+.spinner {
+  border-radius: 100rem;
+  display: inline-block;
+  animation: spinner 1s infinite;
+  @keyframes spinner {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

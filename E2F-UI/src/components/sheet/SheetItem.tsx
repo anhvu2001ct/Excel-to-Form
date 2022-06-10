@@ -11,10 +11,12 @@ type Props = {
 };
 const SheetItem = ({ index }: Props) => {
   const [workbookImport, setWorkbookImport] = useWorkbookImport();
+  const [loading, setLoading] = useState(false);
   const sheet = workbookImport.sheets[index];
   const cord = sheet.cord;
   const handleCheckField = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`${importEndpoint}/validate`, {
         method: "POST",
         body: JSON.stringify({
@@ -28,8 +30,11 @@ const SheetItem = ({ index }: Props) => {
           "Content-Type": "application/json",
         },
       });
-      const result: ResultType<{ valid: boolean; cord: SheetCord; fields: string[] }> =
-        await response.json();
+      const result: ResultType<{
+        valid: boolean;
+        cord: SheetCord;
+        fields: string[];
+      }> = await response.json();
 
       if (!response.ok) throw new Error(result.message as any);
       setWorkbookImport((prevState) => {
@@ -40,12 +45,14 @@ const SheetItem = ({ index }: Props) => {
         };
         return newState;
       });
+      setLoading(false);
     } catch (error) {
       setWorkbookImport((prevState) => {
         const newState = { ...prevState };
         newState.sheets[index].valid = false;
         return newState;
       });
+      setLoading(false);
       add("error", (error as Error).message);
     }
   };
@@ -77,7 +84,9 @@ const SheetItem = ({ index }: Props) => {
           cordType="columnEnd"
         ></SheetInput>
       </div>
-      <ButtonCheck title="Check" onClick={handleCheckField} />
+      <ButtonCheck onClick={handleCheckField} isLoading={loading}>
+        Check
+      </ButtonCheck>
     </div>
   );
 };

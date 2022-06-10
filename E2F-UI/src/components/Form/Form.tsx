@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { sheetEnpoint } from "../../fetchingAPI/fetchingApi";
 import { ObjectType } from "../../types/common";
 import { SheetColumn } from "../../types/Wordbook";
@@ -20,9 +20,10 @@ export default memo(function Form({
   onSubmit,
 }: Props) {
   const dataValid = useRef<ObjectType<boolean>>({});
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     try {
+      setLoading(true);
       e.preventDefault();
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
@@ -36,14 +37,15 @@ export default memo(function Form({
       );
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
+      setLoading(false);
       add("success", "Data added succecssfully");
       form.reset();
       onSubmit();
     } catch (error) {
+      setLoading(false);
       add("error", error as string);
     }
   };
-
   return (
     <form className="sheet-form" onSubmit={handleSubmit}>
       {columns.map((item, index) => (
@@ -54,7 +56,9 @@ export default memo(function Form({
         />
       ))}
       <div className="btn-form-container">
-        <Button title="Save" isFormSubmit={true} />
+        <Button isFormSubmit={true} isLoading={loading}>
+          Save
+        </Button>
       </div>
     </form>
   );
