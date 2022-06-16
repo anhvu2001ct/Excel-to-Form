@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using E2F_Server2.Model.Helper;
 using E2F_Server2.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,12 @@ namespace E2F_Server2.Controllers
         {
             try
             {
+                if (!await SqlHelper.RecordExists("Sheets", sheetId)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Sheet with id={sheetId} does not existed!"
+                });
+
                 return Ok(new
                 {
                     status = true,
@@ -35,18 +42,27 @@ namespace E2F_Server2.Controllers
                 if (form.Count < 1) return BadRequest(new
                 {
                     success = false,
-                    message = "At least one field must not empty"
+                    message = "At least one input must be specified"
                 });
 
-                var query = SqlHelper.GetInsertIdQuery("SheetRows", "Id", "SheetId");
-                var rowId = await Program.Sql.ExecuteScalarAsync<int>(query, new { SheetId=sheetId });
+                var query = "select Id from SheetColumns where SheetId=@sheetId";
+                var columnIds = (await Program.Sql.QueryAsync<string>(query, new { sheetId })).AsList();
+
+                if (columnIds.Count == 0) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Sheet with id={sheetId} does not existed!"
+                });
+
+                query = SqlHelper.GetInsertIdQuery("SheetRows", "Id", "SheetId");
+                var rowId = await Program.Sql.ExecuteScalarAsync<int>(query, new { SheetId = sheetId });
 
                 query = SqlHelper.GetInsertQuery("SheetFields", "Value", "RowId", "ColumnId");
-                await Program.Sql.ExecuteAsync(query, form.Select(c => new
+                await Program.Sql.ExecuteAsync(query, columnIds.Select(cId => new
                 {
-                    Value = c.Value.First(),
+                    Value = form.ContainsKey(cId) ? form[cId].First() : null,
                     RowId = rowId,
-                    ColumnId = c.Key
+                    ColumnId = cId
                 }));
 
                 return Ok(new
@@ -65,13 +81,38 @@ namespace E2F_Server2.Controllers
             }
         }
 
+        [HttpPost("search")]
+        public async Task<IActionResult> SearchData(List<SearchColumn> query)
+        {
+            try
+            {
+                // Todo: finish search with multiple columns.
+                // Dont call to this API atm.
+                return null;
+            }
+            catch
+            {
+                return StatusCode(500, new
+                {
+                    status = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
+
         [HttpDelete("delete/row/{rowId:int}")]
         public async Task<IActionResult> DeleteRowById(int rowId)
         {
             try
             {
                 var query = "delete from SheetRows where Id=@rowId";
-                await Program.Sql.ExecuteAsync(query, new { rowId });
+                var result = await Program.Sql.ExecuteAsync(query, new { rowId });
+
+                if (result == 0) return BadRequest(new
+                {
+                    status = false,
+                    message = $"Row with id={rowId} does not existed!"
+                });
 
                 return Ok(new
                 {
@@ -97,7 +138,7 @@ namespace E2F_Server2.Controllers
                 if (form.Count < 1) return BadRequest(new
                 {
                     success = false,
-                    message = "At least one field must not empty"
+                    message = "At least one input must be specified"
                 });
 
                 var query = SqlHelper.GetUpdateQuery("SheetFields", "Id", "Value");

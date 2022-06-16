@@ -56,5 +56,40 @@ namespace E2F_Server2.Controllers
                 });
             }
         }
+
+        [HttpGet("partial/sheet/{workbookId:int}/{id:int}")]
+        public async Task<IActionResult> ExportFullData(int workbookId, int id)
+        {
+            try
+            {
+                var query = "select Name, FileName from Workbooks where Id=@workbookId";
+                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { workbookId });
+                using (var excel = new ExcelPackage())
+                {
+                    var path = Util.GetDataPath(workbook.FileName);
+                    await excel.LoadAsync(path);
+
+                    query = "select * from Sheets where Id=@id";
+                    var sheet = await Program.Sql.QuerySingleAsync(query, new { id });
+
+                    var excelSheet = excel.Workbook.Worksheets[sheet.SheetIndex];
+                    await SheetHelper.UpdateExcelWithData(excelSheet, sheet);
+
+                    var stream = new MemoryStream();
+                    await excel.SaveAsAsync(stream);
+                    stream.Position = 0;
+                    var extension = Path.GetExtension(workbook.FileName);
+                    return File(stream, Util.GetContentType(extension), $"{workbook.Name}{extension}");
+                }
+            }
+            catch
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Your request was not successful :("
+                });
+            }
+        }
     }
 }

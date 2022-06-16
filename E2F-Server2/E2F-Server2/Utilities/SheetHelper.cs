@@ -13,6 +13,7 @@ namespace E2F_Server2.Utilities
             {
                 Sheet = new Sheet
                 {
+                    Id = -1,
                     SheetIndex = idx,
                     Name = sheet.Name
                 }
@@ -20,11 +21,10 @@ namespace E2F_Server2.Utilities
 
             if (sheet.Dimension != null)
             {
-                res.Sheet.HeaderStartRow = sheet.Dimension.Start.Row;
+                var dim = sheet.Dimension;
+                res.Sheet.HeaderStartRow = dim.Start.Row;
                 res.Sheet.HeaderEndRow = res.Sheet.HeaderStartRow;
-                string startCol = ExcelCellAddress.GetColumnLetter(sheet.Dimension.Start.Column);
-                string endCol = ExcelCellAddress.GetColumnLetter(sheet.Dimension.End.Column);
-                UpdateSheetImport(sheet, res, startCol, endCol);
+                UpdateSheetImport(sheet, res, dim.Start.Column, dim.End.Column);
             }
 
             return res;
@@ -41,7 +41,9 @@ namespace E2F_Server2.Utilities
                 }
             };
 
-            if (sheet.Dimension.End.Row >= rowIndex) UpdateSheetImport(sheet, res, startCol, endCol);
+            if (sheet.Dimension.End.Row >= rowIndex)
+                UpdateSheetImport(sheet, res, ColumnNameToNumber(startCol), ColumnNameToNumber(endCol));
+
             if (!res.Valid)
             {
                 res.Sheet.HeaderStartCol = startCol;
@@ -50,19 +52,20 @@ namespace E2F_Server2.Utilities
             return res;
         }
 
-        public static void UpdateSheetImport(ExcelWorksheet sheet, SheetImport data, string startCol, string endCol)
+        public static void UpdateSheetImport(ExcelWorksheet sheet, SheetImport data, int startCol, int endCol)
         {
-            var cells = sheet.Cells[$"{startCol}{data.Sheet.HeaderStartRow}:{endCol}{data.Sheet.HeaderStartRow}"];
+            var cells = sheet.Cells[data.Sheet.HeaderStartRow, startCol, data.Sheet.HeaderEndRow, endCol];
             string? lastCell = null;
 
-            int start = ColumnNameToNumber(startCol), end = ColumnNameToNumber(endCol);
-            for (int i = start; i <= end; ++i)
+            int firstCol = startCol;
+            for (int i = startCol; i <= endCol; ++i)
             {
                 var cell = sheet.Cells[data.Sheet.HeaderStartRow, i];
                 var fieldName = cell?.Text;
                 if (data.Sheet.HeaderStartCol == null && !string.IsNullOrEmpty(fieldName))
                 {
                     data.Sheet.HeaderStartCol = GetColumnFromAddress(cell!.Address);
+                    firstCol = i;
                 }
 
                 if (data.Sheet.HeaderStartCol != null)
@@ -70,8 +73,9 @@ namespace E2F_Server2.Utilities
                     if (string.IsNullOrEmpty(fieldName)) break;
                     data.Sheet.Columns.Add(new SheetColumn
                     {
+                        Id = -1,
                         Name = fieldName,
-                        ColumnIndex = i - start
+                        ColumnIndex = i - firstCol
                     });
                     lastCell = cell!.Address;
                 }

@@ -56,11 +56,11 @@ namespace E2F_Server2.Controllers
         {
             try
             {
-                var fileName = data.GetProperty("workbookId").GetString()!;
+                var fileName = data.GetProperty("fileName").GetString()!;
                 var sheetIndex = data.GetProperty("sheetIndex").GetInt16();
-                var rowIndex = data.GetProperty("startRow").GetInt32();
-                var startCol = Util.SubMax(data.GetProperty("startCol").GetString()!, 3).ToUpperInvariant();
-                var endCol = Util.SubMax(data.GetProperty("endCol").GetString()!, 3).ToUpperInvariant();
+                var rowIndex = data.GetProperty("headerStartRow").GetInt32();
+                var startCol = Util.SubMax(data.GetProperty("headerStartCol").GetString()!, 3).ToUpperInvariant();
+                var endCol = Util.SubMax(data.GetProperty("headerEndCol").GetString()!, 3).ToUpperInvariant();
 
                 int startColNum = SheetHelper.ColumnNameToNumber(startCol);
                 int endColNum = SheetHelper.ColumnNameToNumber(endCol);
@@ -114,6 +114,7 @@ namespace E2F_Server2.Controllers
                             Sheet = new
                             {
                                 res.Sheet.HeaderStartRow,
+                                res.Sheet.HeaderEndRow,
                                 res.Sheet.HeaderStartCol,
                                 res.Sheet.HeaderEndCol,
                                 res.Sheet.Columns

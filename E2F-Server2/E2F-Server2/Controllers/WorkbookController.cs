@@ -31,16 +31,20 @@ namespace E2F_Server2.Controllers
         }
 
         [HttpGet("get/single")]
-        public async Task<IActionResult> GetWorkbook([FromQuery] string id)
+        public async Task<IActionResult> GetWorkbook([FromQuery] int id)
         {
             try
             {
-                var query = "select * from Workbooks where Id=@id";
-                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { id });
+                if (!await SqlHelper.RecordExists("Workbooks", id)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Workbook with id={id} does not existed!"
+                });
+
                 return Ok(new
                 {
                     status = true,
-                    message = workbook
+                    message = await WorkbookHelper.GetWorkbookSheets(id)
                 });
             }
             catch
@@ -60,7 +64,7 @@ namespace E2F_Server2.Controllers
             {
                 name ??= "";
                 var query = "select * from Workbooks where dbo.rmvAccent(Name) like concat(N'%',dbo.rmvAccent(@name),'%')";
-                var li = await Program.Sql.QueryAsync<Workbook>(query);
+                var li = await Program.Sql.QueryAsync<Workbook>(query, new { name });
                 return Ok(new
                 {
                     status = true,
@@ -83,7 +87,14 @@ namespace E2F_Server2.Controllers
             try
             {
                 var query = "delete from Workbooks where Id=@id";
-                await Program.Sql.ExecuteAsync(query, new { id });
+                var result = await Program.Sql.ExecuteAsync(query, new { id });
+
+                if (result == 0) return BadRequest(new
+                {
+                    status = false,
+                    message = $"Workbook with id={id} does not existed!"
+                });
+
                 return Ok(new
                 {
                     status = true,
@@ -100,10 +111,10 @@ namespace E2F_Server2.Controllers
             }
         }
 
-        [HttpPut("edit/{workbookId:int}")]
+        [HttpPut("edit/{id:int}")]
         [RequestSizeLimit(int.MaxValue)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-        public async Task<IActionResult> EditById(int workbookId, IFormCollection form)
+        public async Task<IActionResult> EditById(int id, IFormCollection form)
         {
             try
             {
@@ -132,17 +143,22 @@ namespace E2F_Server2.Controllers
                 if (!parameters.ParameterNames.Any()) return BadRequest(new
                 {
                     success = false,
-                    message = "No params found to perform edit"
+                    message = "At least one input must be specified"
                 });
 
                 var query = SqlHelper.GetUpdateQuery("Workbooks", "Id", parameters.ParameterNames.ToArray());
-                parameters.Add("Id", workbookId);
-                await Program.Sql.ExecuteAsync(query, parameters);
+                parameters.Add("Id", id);
+                var result = await Program.Sql.ExecuteAsync(query, parameters);
+                if (result == 0) return BadRequest(new
+                {
+                    status = false,
+                    message = $"Workbook with id={id} does not existed!"
+                });
 
                 return Ok(new
                 {
                     success = true,
-                    message = $"Edited workbook with Id={workbookId}"
+                    message = $"Edited workbook with Id={id}"
                 });
             }
             catch

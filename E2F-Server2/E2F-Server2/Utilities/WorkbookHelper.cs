@@ -53,7 +53,7 @@ namespace E2F_Server2.Utilities
 
         public static async Task UpdateExcelWithData(ExcelWorksheets sheets, Workbook workbook)
         {
-            var query = "select * from Sheets where Id=@Id";
+            var query = "select * from Sheets where WorkbookId=@Id";
             var li = await Program.Sql.QueryAsync<Sheet>(query, new { workbook.Id });
             foreach (var sheet in li)
             {
