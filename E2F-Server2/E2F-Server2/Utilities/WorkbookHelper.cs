@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using E2F_Server2.Model;
+using E2F_Server2.Model.Helper;
 using OfficeOpenXml;
 
 namespace E2F_Server2.Utilities
@@ -51,13 +52,16 @@ namespace E2F_Server2.Utilities
             return res;
         }
 
-        public static async Task UpdateExcelWithData(ExcelWorksheets sheets, Workbook workbook)
+        public static async Task UpdateExcelWithData(ExcelWorksheets sheets, Workbook workbook, Dictionary<int, List<KeyValuePair<int, string>>>? parts = null)
         {
             var query = "select * from Sheets where WorkbookId=@Id";
             var li = await Program.Sql.QueryAsync<Sheet>(query, new { workbook.Id });
             foreach (var sheet in li)
             {
-                await SheetHelper.UpdateExcelWithData(sheets[sheet.SheetIndex], sheet);
+                int id = sheet.Id;
+                if (parts != null && !parts.ContainsKey(id)) continue;
+                var data = parts == null ? await SheetHelper.GetFullSheetData(id) : await SheetHelper.GetSheetData(id, parts[id]);
+                SheetHelper.UpdateExcelWithData(sheets[sheet.SheetIndex], sheet, data);
             }
         }
 

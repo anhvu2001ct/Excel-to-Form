@@ -21,7 +21,7 @@ namespace E2F_Server2.Controllers
                 return Ok(new
                 {
                     status = true,
-                    message = await SheetHelper.GetSheetData(sheetId)
+                    message = await SheetHelper.GetFullSheetData(sheetId)
                 });
             }
             catch
@@ -81,14 +81,22 @@ namespace E2F_Server2.Controllers
             }
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchData(List<SearchColumn> query)
+        [HttpPost("search/{sheetId:int}")]
+        public async Task<IActionResult> SearchData(int sheetId, List<KeyValuePair<int, string>> query)
         {
             try
             {
-                // Todo: finish search with multiple columns.
-                // Dont call to this API atm.
-                return null;
+                if (!await SqlHelper.RecordExists("Sheets", sheetId)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Sheet with id={sheetId} does not existed!"
+                });
+
+                return Ok(new
+                {
+                    status = true,
+                    message = await SheetHelper.GetSheetData(sheetId, query)
+                });
             }
             catch
             {

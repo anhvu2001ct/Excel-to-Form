@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using E2F_Server2.Model;
+using E2F_Server2.Model.Helper;
 using E2F_Server2.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -8,13 +9,19 @@ namespace E2F_Server2.Controllers
 {
     public class ExportController : BaseController
     {
-        [HttpGet("origin/{id:int}")]
-        public async Task<IActionResult> ExportOriginalFile(int id)
+        [HttpGet("origin/{workbookId:int}")]
+        public async Task<IActionResult> ExportOriginalFile(int workbookId)
         {
             try
             {
-                var query = "select Name, FileName from Workbooks where Id=@id";
-                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { id });
+                if (!await SqlHelper.RecordExists("Workbooks", workbookId)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Workbook with id={workbookId} does not existed!"
+                });
+
+                var query = "select Name, FileName from Workbooks where Id=@workbookId";
+                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { workbookId });
                 var extension = Path.GetExtension(workbook.FileName);
                 return PhysicalFile(Util.GetDataPath(workbook.FileName), Util.GetContentType(extension), $"{workbook.Name}{extension}");
             }
@@ -28,13 +35,19 @@ namespace E2F_Server2.Controllers
             }
         }
 
-        [HttpGet("full/{id:int}")]
-        public async Task<IActionResult> ExportFullData(int id)
+        [HttpGet("full/{workbookId:int}")]
+        public async Task<IActionResult> ExportFullData(int workbookId)
         {
             try
             {
-                var query = "select Id, Name, FileName from Workbooks where Id=@id";
-                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { id });
+                if (!await SqlHelper.RecordExists("Workbooks", workbookId)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Workbook with id={workbookId} does not existed!"
+                });
+
+                var query = "select Id, Name, FileName from Workbooks where Id=@workbookId";
+                var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { workbookId });
                 using (var excel = new ExcelPackage())
                 {
                     var path = Util.GetDataPath(workbook.FileName);
@@ -57,24 +70,24 @@ namespace E2F_Server2.Controllers
             }
         }
 
-        [HttpGet("partial/sheet/{workbookId:int}/{id:int}")]
-        public async Task<IActionResult> ExportFullData(int workbookId, int id)
+        [HttpPost("partial/{workbookId:int}")]
+        public async Task<IActionResult> ExportPartial(int workbookId, Dictionary<int, List<KeyValuePair<int, string>>>? parts)
         {
             try
             {
-                var query = "select Name, FileName from Workbooks where Id=@workbookId";
+                if (!await SqlHelper.RecordExists("Workbooks", workbookId)) return BadRequest(new
+                {
+                    success = false,
+                    message = $"Workbook with id={workbookId} does not existed!"
+                });
+
+                var query = "select Id, Name, FileName from Workbooks where Id=@workbookId";
                 var workbook = await Program.Sql.QuerySingleAsync<Workbook>(query, new { workbookId });
                 using (var excel = new ExcelPackage())
                 {
                     var path = Util.GetDataPath(workbook.FileName);
                     await excel.LoadAsync(path);
-
-                    query = "select * from Sheets where Id=@id";
-                    var sheet = await Program.Sql.QuerySingleAsync(query, new { id });
-
-                    var excelSheet = excel.Workbook.Worksheets[sheet.SheetIndex];
-                    await SheetHelper.UpdateExcelWithData(excelSheet, sheet);
-
+                    await WorkbookHelper.UpdateExcelWithData(excel.Workbook.Worksheets, workbook, parts);
                     var stream = new MemoryStream();
                     await excel.SaveAsAsync(stream);
                     stream.Position = 0;

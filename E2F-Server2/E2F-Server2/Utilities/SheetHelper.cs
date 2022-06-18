@@ -133,9 +133,8 @@ namespace E2F_Server2.Utilities
             }
         }
 
-        public static async Task UpdateExcelWithData(ExcelWorksheet excelSheet, Sheet sheet)
+        public static void UpdateExcelWithData(ExcelWorksheet excelSheet, Sheet sheet, List<SheetRow> data)
         {
-            var data = await GetSheetData(sheet.Id);
             var firstDataRow = sheet.HeaderStartRow + 1;
             var range = excelSheet.Cells[$"{sheet.HeaderStartCol}{firstDataRow}:{sheet.HeaderEndCol}{firstDataRow}"];
 
@@ -161,7 +160,7 @@ namespace E2F_Server2.Utilities
             return res;
         }
 
-        public static async Task<List<SheetRow>> GetSheetData(int sheetId)
+        public static async Task<List<SheetRow>> GetFullSheetData(int sheetId)
         {
             var query = @"select f.Id, f.Value, f.RowId, r.CreatedAt
                             from SheetRows r
@@ -169,7 +168,52 @@ namespace E2F_Server2.Utilities
                             left join SheetColumns c on c.Id=f.ColumnId
                             where r.SheetId=@sheetId
                             order by f.RowId, c.ColumnIndex";
-            var li = await Program.Sql.QueryAsync<SheetFieldSelect>(query, new { sheetId });
+            var li = await Program.Sql.QueryAsync<SheetFieldSelected>(query, new { sheetId });
+            return GetListRows(li);
+        }
+
+        public static async Task<List<SheetRow>> GetSheetData(int sheetId, List<KeyValuePair<int, string>> patterns)
+        {
+            List<KeyValuePair<int, string>> dataToCases = new();
+            var parameters = new DynamicParameters();
+            foreach (var pattern in patterns)
+            {
+                if (pattern.Value == null) continue;
+                var key = $"c{pattern.Key}";
+                dataToCases.Add(new(pattern.Key, key));
+                parameters.Add(key, pattern.Value);
+            }
+
+            if (dataToCases.Count == 0) return await GetFullSheetData(sheetId);
+
+            var query = @$"with fields as (
+	                        select
+		                        RowId,
+		                        {SqlHelper.GetCasesFromPatterns(dataToCases)}
+	                        from
+		                        SheetColumns c
+		                        left join SheetFields f on f.ColumnId = c.Id
+	                        where
+		                        c.SheetId=@sheetId
+                        ), rows as (
+	                        select RowId
+	                        from fields
+	                        group by RowId
+	                        having min(Matched)=1
+                        )
+                        select f.Id, f.Value, f.RowId, r.CreatedAt
+                        from rows
+	                        left join SheetRows r on r.Id=rows.RowId
+	                        left join SheetFields f on f.RowId=r.Id
+	                        left join SheetColumns c on c.Id=f.ColumnId
+                        order by r.Id, c.ColumnIndex";
+            parameters.Add("sheetId", sheetId);
+            var li = await Program.Sql.QueryAsync<SheetFieldSelected>(query, parameters);
+            return GetListRows(li);
+        }
+
+        private static List<SheetRow> GetListRows(IEnumerable<SheetFieldSelected> li)
+        {
             var res = new List<SheetRow>();
             foreach (var field in li)
             {

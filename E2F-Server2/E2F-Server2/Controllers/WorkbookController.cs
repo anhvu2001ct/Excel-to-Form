@@ -63,7 +63,7 @@ namespace E2F_Server2.Controllers
             try
             {
                 name ??= "";
-                var query = "select * from Workbooks where dbo.rmvAccent(Name) like concat(N'%',dbo.rmvAccent(@name),'%')";
+                var query = "select * from Workbooks where dbo.rmvAccent(Name) like concat('%',dbo.rmvAccent(@name),'%')";
                 var li = await Program.Sql.QueryAsync<Workbook>(query, new { name });
                 return Ok(new
                 {

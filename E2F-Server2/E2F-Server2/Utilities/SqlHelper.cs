@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using System.Text;
 
 namespace E2F_Server2.Utilities
 {
@@ -27,6 +28,27 @@ namespace E2F_Server2.Utilities
         {
             var query = $"select count(distinct 1) from {table} where {tableId}=@id";
             return await Program.Sql.ExecuteScalarAsync<bool>(query, new { id });
+        }
+
+        public static string GetCasesFromPatterns(List<KeyValuePair<int, string>> patterns)
+        {
+            var res = new StringBuilder("");
+            foreach (var pattern in patterns)
+            {
+                var cid = pattern.Key;
+                var cVal = pattern.Value;
+                res.Append(@$"
+                            when ColumnId={pattern.Key} then
+                                case
+                                    when ColumnType != 'text' and Value=@{cVal} then 1
+					                when ColumnType = 'text' and dbo.rmvAccent(Value) like concat('%',dbo.rmvAccent(@{cVal}),'%') then 1
+					                else 0
+                                end");
+            }
+            return @$"case
+                        {res}
+                        else 1
+                    end as Matched";
         }
     }
 }
