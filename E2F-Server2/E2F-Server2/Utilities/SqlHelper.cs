@@ -30,18 +30,18 @@ namespace E2F_Server2.Utilities
             return await Program.Sql.ExecuteScalarAsync<bool>(query, new { id });
         }
 
-        public static string GetCasesFromPatterns(List<KeyValuePair<int, string>> patterns)
+        public static string GetCasesFromPatterns(List<KeyValuePair<string, string>> patterns)
         {
             var res = new StringBuilder("");
             foreach (var pattern in patterns)
             {
                 var cid = pattern.Key;
-                var cVal = pattern.Value;
+                var cval = pattern.Value;
                 res.Append(@$"
-                            when ColumnId={pattern.Key} then
+                            when ColumnId=@{cid} then
                                 case
-                                    when ColumnType != 'text' and Value=@{cVal} then 1
-					                when ColumnType = 'text' and dbo.rmvAccent(Value) like concat('%',dbo.rmvAccent(@{cVal}),'%') then 1
+                                    when ColumnType != 'text' and Value=@{cval} then 1
+					                when ColumnType = 'text' and dbo.rmvAccent(Value) like concat('%',dbo.rmvAccent(@{cval}),'%') then 1
 					                else 0
                                 end");
             }

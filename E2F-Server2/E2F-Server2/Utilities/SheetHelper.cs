@@ -174,14 +174,17 @@ namespace E2F_Server2.Utilities
 
         public static async Task<List<SheetRow>> GetSheetData(int sheetId, List<KeyValuePair<int, string>> patterns)
         {
-            List<KeyValuePair<int, string>> dataToCases = new();
+            List<KeyValuePair<string, string>> dataToCases = new();
             var parameters = new DynamicParameters();
+            int cnt = -1;
             foreach (var pattern in patterns)
             {
                 if (pattern.Value == null) continue;
-                var key = $"c{pattern.Key}";
-                dataToCases.Add(new(pattern.Key, key));
-                parameters.Add(key, pattern.Value);
+                var cid = $"cid{++cnt}";
+                var cval = $"c{cnt}";
+                dataToCases.Add(new(cid, cval));
+                parameters.Add(cid, pattern.Key);
+                parameters.Add(cval, pattern.Value);
             }
 
             if (dataToCases.Count == 0) return await GetFullSheetData(sheetId);
