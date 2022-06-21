@@ -6,11 +6,13 @@ import {
   Input,
   InputRef,
   message,
+  Popconfirm,
   Select,
   Space,
   Table,
 } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import { Sheet } from "../../types/Sheet";
 import { SheetColumn } from "../../types/SheetColumn";
@@ -41,9 +43,15 @@ function createSelectComp(options: string[]) {
   );
 }
 
+type MappingType = {
+  [key: string]: {
+    [key2: string]: number;
+  };
+};
+
 const TableWorkBook = ({ sheet }: Props) => {
   const [form] = Form.useForm();
-  const [data, setData] = useState<object[]>([]);
+  const [data, setData] = useState<SheetRow[]>([]);
   const searchInputRef = useRef<InputRef>(null);
   const [editingRowId, setEditingRowId] = useState("");
 
@@ -133,6 +141,75 @@ const TableWorkBook = ({ sheet }: Props) => {
     },
   }));
 
+  const dataSource = useMemo(
+    () =>
+      data.map((row) => {
+        const result: any = {
+          key: row.id,
+        };
+        row.fields.forEach(
+          (f, idx) => (result[columns[idx].dataIndex] = f.value)
+        );
+        return result;
+      }),
+    [data]
+  );
+
+  const idMapping = useMemo(() => {
+    const result: MappingType = {};
+    data.forEach((row) => {
+      result[row.id] = {} as any;
+      columns.forEach(
+        (col, idx) => (result[row.id][col.key] = row.fields[idx].id)
+      );
+    });
+    return result;
+  }, [data]);
+
+  const updateRow = async (id: number) => {
+    const values = await form.validateFields();
+    const formData = new FormData();
+    for (const cid in values) {
+      if (!(cid in idMapping[id]) || values[cid] == null) continue;
+      const fid = idMapping[id][cid];
+      formData.append(fid.toString(), values[cid]);
+    }
+
+    try {
+      const response = await fetch(apiEndpoint("sheet", "edit", "data"), {
+        method: "PUT",
+        body: formData,
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      refreshData();
+      setEditingRowId("");
+      message.info(`Edited a row in sheet ${sheet.name}`);
+    } catch (_error) {
+      const error = _error as Error;
+      toast.error(error.message);
+    }
+  };
+
+  const deleteRow = async (id: number) => {
+    try {
+      const response = await fetch(
+        apiEndpoint("sheet", "delete", "row", id.toString()),
+        {
+          method: "DELETE",
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      refreshData();
+      setEditingRowId("");
+      message.success(`Deleted a row in sheet ${sheet.name}`);
+    } catch (_error) {
+      const error = _error as Error;
+      toast.error(error.message);
+    }
+  };
+
   columns = [
     ...columns,
     {
@@ -156,18 +233,29 @@ const TableWorkBook = ({ sheet }: Props) => {
                 >
                   Edit
                 </Button>
-                <Button
-                  type="link"
-                  style={{
-                    color: "red",
-                  }}
+                <Popconfirm
+                  title="Are you sure want to delete this?"
+                  onConfirm={() => deleteRow(record.key)}
+                  okText={
+                    <span className="text-blue-500 transition-all hover:text-white">
+                      Yes
+                    </span>
+                  }
+                  cancelText="No"
                 >
-                  Remove
-                </Button>
+                  <Button
+                    type="link"
+                    style={{
+                      color: "red",
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Popconfirm>
               </>
             ) : (
               <>
-                <Button type="link" htmlType="submit">
+                <Button type="link" onClick={() => updateRow(record.key)}>
                   Save
                 </Button>
                 <Button
@@ -186,40 +274,30 @@ const TableWorkBook = ({ sheet }: Props) => {
       },
     },
   ];
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const params = new URLSearchParams();
-        params.append("sheetId", sheet.id.toString());
-        const response = await fetch(
-          apiEndpoint("sheet", `get/data?${params}`)
-        );
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
-        const _data = result.message as SheetRow[];
-        setData(
-          _data.map((row) => {
-            const result: any = {
-              key: row.id,
-            };
-            row.fields.forEach(
-              (f, idx) => (result[columns[idx].dataIndex] = f.value)
-            );
-            return result;
-          })
-        );
-      } catch (error) {}
+
+  const refreshData = async () => {
+    try {
+      const params = new URLSearchParams();
+      params.append("sheetId", sheet.id.toString());
+      const response = await fetch(apiEndpoint("sheet", `get/data?${params}`));
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      setData(result.message);
+    } catch (_error) {
+      const error = _error as Error;
+      toast.error(error.message);
     }
-    fetchData();
-  }, []);
-  const onFinish = (values: any) => {
-    console.log(values);
   };
+
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   return (
-    <Form form={form} onFinish={onFinish}>
+    <Form form={form} component={false}>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={dataSource}
         pagination={{ pageSize: 10 }}
         scroll={{ x: "max-content", y: 500 }}
       />
