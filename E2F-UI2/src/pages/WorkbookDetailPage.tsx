@@ -82,6 +82,7 @@ const WorkbookDetailPage = () => {
         <div className="w-full flex flex-col justify-center gap-4">
           {workbookSheet.sheets?.map((sheet) => (
             <Collapse
+              key={sheet.id}
               expandIconPosition={"end"}
               className={`shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)]`}
             >

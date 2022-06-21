@@ -31,9 +31,9 @@ function compareStr(a: any, b: any) {
   return a < b ? -1 : 1;
 }
 
-function createSelectComp(options: string[]) {
+function createSelectComp(options: string[], props: any = {}) {
   return (
-    <Select>
+    <Select {...props}>
       {options.map((val, idx) => (
         <Select.Option key={idx} value={val}>
           {val}
@@ -59,46 +59,33 @@ const TableWorkBook = ({ sheet }: Props) => {
     key: col.id,
     title: col.name,
     dataIndex: col.id,
-    width: 200,
+    minWidth: "200px",
     sorter: (a: any, b: any) => compareStr(a[col.id], b[col.id]),
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }: any) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }: any) => (
       <div style={{ padding: 8 }}>
-        <Input
-          ref={searchInputRef}
-          placeholder={`Search ${col.name}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => confirm()}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => confirm({ closeDropdown: false })}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => {
-              clearFilters && clearFilters();
+        {col.columnType === "select" ? (
+          createSelectComp(col.selectOptions!, {
+            value: selectedKeys[0],
+            placeholder: "Select to filter",
+            allowClear: true,
+            onChange: (value: any) => {
+              setSelectedKeys(value ? [value] : []);
               confirm();
-            }}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-        </Space>
+            },
+            style: { width: "100%" },
+          })
+        ) : (
+          <Input
+            allowClear
+            ref={searchInputRef}
+            placeholder={`Search ${col.name}`}
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm()}
+          />
+        )}
       </div>
     ),
     filterIcon: (filtered: boolean) => (
@@ -109,11 +96,14 @@ const TableWorkBook = ({ sheet }: Props) => {
         setTimeout(() => searchInputRef.current?.select(), 100);
       }
     },
-    onFilter: (value: string, record: any) =>
-      record[col.id]
+    onFilter: (value: string, record: any) => {
+      if (col.columnType === "select")
+        return record[col.id].toString() === value;
+      return record[col.id]
         .toString()
         .toLowerCase()
-        .includes((value as string).toLowerCase()),
+        .includes((value as string).toLowerCase());
+    },
     render: (text: string, record: any) => {
       if (editingRowId === record.key) {
         const inputNode =
@@ -216,6 +206,7 @@ const TableWorkBook = ({ sheet }: Props) => {
       key: "action",
       title: "Actions",
       dataIndex: "action",
+      fixed: "right",
       render: (_: any, record: any) => {
         return (
           <div className="flex items-center gap-2 p-3">
