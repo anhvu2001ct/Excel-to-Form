@@ -5,8 +5,9 @@ import { Workbook } from "../../types/Workbook";
 import "./HeaderWorkBook.scss";
 type Props = {
   workbook: Workbook;
+  disable: boolean;
 };
-export default function HeaderWorkBook({ workbook }: Props) {
+export default function HeaderWorkBook({ workbook, disable = false }: Props) {
   if (!workbook) return null;
   const [title, setTitle] = useState(workbook.name);
   const [description, setDescription] = useState(workbook.description || "");
@@ -30,6 +31,7 @@ export default function HeaderWorkBook({ workbook }: Props) {
           </label>
           <input
             placeholder="Enter title"
+            disabled={disable}
             name="name"
             id="header-name"
             value={title}
@@ -41,6 +43,7 @@ export default function HeaderWorkBook({ workbook }: Props) {
           />
         </div>
         <TextArea
+          disabled={disable}
           rows={4}
           placeholder="Enter your description here"
           className="flex-grow"

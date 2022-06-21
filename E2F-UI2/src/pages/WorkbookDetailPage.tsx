@@ -1,11 +1,12 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Divider } from "antd";
+import { Breadcrumb, Button, Collapse, Divider, Tag } from "antd";
 import { useEffect, useId } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../API/endpoint";
 import HeaderWorkBook from "../components/modal/HeaderWorkBook";
 import WorkbookSheet from "../components/workbook/WorkBookItem";
+const { Panel } = Collapse;
 import {
   useWorkbookSheet,
   WorkbookSheetProvider,
@@ -37,6 +38,12 @@ const WorkbookDetailPage = () => {
     }
     fetchData();
   }, []);
+  const ExportFullData = () => {
+    window.location.assign(apiEndpoint(`export/full/${idWorkbook}`));
+  };
+  const ExportOrigin = () => {
+    window.location.assign(apiEndpoint(`export/origin/${idWorkbook}`));
+  };
   return (
     <div className="py-4">
       <Breadcrumb>
@@ -54,6 +61,7 @@ const WorkbookDetailPage = () => {
           type="primary"
           className="text-blue-500"
           icon={<DownloadOutlined />}
+          onClick={ExportFullData}
         >
           Export all
         </Button>
@@ -61,18 +69,35 @@ const WorkbookDetailPage = () => {
           type="primary"
           className="text-blue-500"
           icon={<DownloadOutlined />}
+          onClick={ExportOrigin}
         >
           Export origin
         </Button>
       </div>
       <div className="w-full mt-3">
-        <HeaderWorkBook workbook={workbookSheet.workbook} />
+        <HeaderWorkBook workbook={workbookSheet.workbook} disable={true} />
         <Divider orientation="left" className="py-4">
           List of sheet
         </Divider>
         <div className="w-full flex flex-col justify-center gap-4">
           {workbookSheet.sheets?.map((sheet) => (
-            <WorkbookSheet key={sheet.id} sheet={sheet} />
+            <Collapse
+              expandIconPosition={"end"}
+              className={`shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)]`}
+            >
+              <Panel
+                header={
+                  <Tag color="blue">
+                    <span className="max-w-[200px] line-clamp-1 text-base">
+                      Name
+                    </span>
+                  </Tag>
+                }
+                key={sheet.id}
+              >
+                <WorkbookSheet key={sheet.id} sheet={sheet} />
+              </Panel>
+            </Collapse>
           ))}
         </div>
       </div>
