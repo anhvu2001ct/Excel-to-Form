@@ -1,0 +1,22 @@
+.modal {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 750px;
+    width: 100%;
+  }
+}
+.btn-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  margin-top: 10px;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.ant-row.ant-form-item {
+  margin: 0;
+}
+

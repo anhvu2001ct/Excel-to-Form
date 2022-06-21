@@ -1,0 +1,10 @@
+@import "../../styles/mixin.scss";
+.header {
+  &-top-title {
+    @include bgColorText(var(--primary-color));
+    transition: 0.25s;
+    &.error {
+      color: var(--red);
+    }
+  }
+}
