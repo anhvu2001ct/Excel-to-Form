@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { message, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -6,7 +6,6 @@ import { apiEndpoint } from "../../API/endpoint";
 import DefaultImage from "../../data/img/default-img.webp";
 import { Workbook } from "../../types/Workbook";
 import "./EditCard.scss";
-import { useWorkbooksRefresh } from "./WorkbookCards";
 
 type Props = {
   workbook: Workbook;
@@ -34,19 +33,22 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
       formData.append("description", description);
       if (fileRef.current) formData.append("image", fileRef.current);
 
-      const resposne = await fetch(
+      const response = await fetch(
         apiEndpoint("workbook", "edit", workbook.id.toString()),
         {
           method: "PUT",
           body: formData,
         }
       );
+
+      if (!response.ok) throw new Error((await response.json()).message);
+      onClose();
+      message.info("Edited workbook");
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
     } finally {
       setWaiting(false);
-      onClose();
     }
   };
   const changeImage = (e: React.ChangeEvent<HTMLInputElement>) => {

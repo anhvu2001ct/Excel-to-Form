@@ -82,7 +82,7 @@ namespace E2F_Server2.Controllers
         }
 
         [HttpPost("search/{sheetId:int}")]
-        public async Task<IActionResult> SearchData(int sheetId, List<KeyValuePair<int, string>> query)
+        public async Task<IActionResult> SearchData(int sheetId, SheetSearchQuery query)
         {
             try
             {

@@ -2,7 +2,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import {
   Button,
   Form,
-  FormInstance,
   Input,
   InputRef,
   message,
@@ -14,13 +13,11 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
+import { useWorkbookSheets } from "../../context/workbook-context";
 import { Sheet } from "../../types/Sheet";
-import { SheetColumn } from "../../types/SheetColumn";
 import { SheetRow } from "../../types/SheetRow";
+import { useSheetData } from "../sheet/SheetDetail";
 
-interface DataType {
-  key: React.Key | number;
-}
 type Props = {
   sheet: Sheet;
 };
@@ -43,49 +40,78 @@ function createSelectComp(options: string[], props: any = {}) {
   );
 }
 
-type MappingType = {
-  [key: string]: {
-    [key2: string]: number;
-  };
-};
-
-const TableWorkBook = ({ sheet }: Props) => {
+const TableWorkbook = ({ sheet }: Props) => {
   const [form] = Form.useForm();
-  const [data, setData] = useState<SheetRow[]>([]);
-  const searchInputRef = useRef<InputRef>(null);
+  const [data, refreshData] = useSheetData();
+  const exportViewData = useWorkbookSheets()[sheet.id];
   const [editingRowId, setEditingRowId] = useState("");
+  const [sortedInfo, setSortedInfo] = useState<any>({});
+  const searchInputRef = useRef<InputRef>(null);
 
   let columns = sheet.columns.map<any>((col) => ({
     key: col.id,
     title: col.name,
     dataIndex: col.id,
-    minWidth: "200px",
+    width: 200,
     sorter: (a: any, b: any) => compareStr(a[col.id], b[col.id]),
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }: any) => (
+    sortOrder: sortedInfo.columnKey === col.id ? sortedInfo.order : null,
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }: any) => (
       <div style={{ padding: 8 }}>
         {col.columnType === "select" ? (
           createSelectComp(col.selectOptions!, {
             value: selectedKeys[0],
             placeholder: "Select to filter",
-            allowClear: true,
             onChange: (value: any) => {
               setSelectedKeys(value ? [value] : []);
-              confirm();
             },
             style: { width: "100%" },
           })
         ) : (
           <Input
-            allowClear
             ref={searchInputRef}
             placeholder={`Search ${col.name}`}
             value={selectedKeys[0]}
-            onChange={(e) =>
-              setSelectedKeys(e.target.value ? [e.target.value] : [])
-            }
-            onPressEnter={() => confirm()}
+            onChange={(e) => {
+              setSelectedKeys(e.target.value ? [e.target.value] : []);
+            }}
           />
         )}
+        <Space
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "8px",
+          }}
+        >
+          <Button
+            type="primary"
+            onClick={() => {
+              confirm();
+              exportViewData.searchPatterns[col.id] = selectedKeys[0];
+            }}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters();
+              confirm();
+              exportViewData.searchPatterns[col.id] = undefined;
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
       </div>
     ),
     filterIcon: (filtered: boolean) => (
@@ -133,7 +159,7 @@ const TableWorkBook = ({ sheet }: Props) => {
 
   const dataSource = useMemo(
     () =>
-      data.map((row) => {
+      data?.map((row) => {
         const result: any = {
           key: row.id,
         };
@@ -146,8 +172,8 @@ const TableWorkBook = ({ sheet }: Props) => {
   );
 
   const idMapping = useMemo(() => {
-    const result: MappingType = {};
-    data.forEach((row) => {
+    const result: Record<string, Record<string, number>> = {};
+    data?.forEach((row) => {
       result[row.id] = {} as any;
       columns.forEach(
         (col, idx) => (result[row.id][col.key] = row.fields[idx].id)
@@ -207,6 +233,7 @@ const TableWorkBook = ({ sheet }: Props) => {
       title: "Actions",
       dataIndex: "action",
       fixed: "right",
+      width: 200,
       render: (_: any, record: any) => {
         return (
           <div className="flex items-center gap-2 p-3">
@@ -266,24 +293,6 @@ const TableWorkBook = ({ sheet }: Props) => {
     },
   ];
 
-  const refreshData = async () => {
-    try {
-      const params = new URLSearchParams();
-      params.append("sheetId", sheet.id.toString());
-      const response = await fetch(apiEndpoint("sheet", `get/data?${params}`));
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message);
-      setData(result.message);
-    } catch (_error) {
-      const error = _error as Error;
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    refreshData();
-  }, []);
-
   return (
     <Form form={form} component={false}>
       <Table
@@ -291,9 +300,18 @@ const TableWorkBook = ({ sheet }: Props) => {
         dataSource={dataSource}
         pagination={{ pageSize: 10 }}
         scroll={{ x: "max-content", y: 500 }}
+        onChange={(_1, _2, sorter: any) => {
+          setSortedInfo(sorter);
+          exportViewData.sorting = sorter.order
+            ? {
+                columnId: sorter.columnKey,
+                order: sorter.order === "ascend" ? "asc" : "desc",
+              }
+            : undefined;
+        }}
       />
     </Form>
   );
 };
 
-export default TableWorkBook;
+export default TableWorkbook;

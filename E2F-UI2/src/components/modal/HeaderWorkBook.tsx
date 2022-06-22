@@ -8,7 +8,6 @@ type Props = {
   disable: boolean;
 };
 export default function HeaderWorkBook({ workbook, disable = false }: Props) {
-  if (!workbook) return null;
   const [title, setTitle] = useState(workbook.name);
   const [description, setDescription] = useState(workbook.description || "");
   return (

@@ -1,20 +1,27 @@
-import { createContext, useContext, useState } from "react";
-import { UseStateCom } from "../types/Base";
-import { WorkbookSheets } from "../types/WorkbookSheets";
+import { createContext, useContext, useRef } from "react";
 
-const WorkbookSheetContext = createContext<UseStateCom<WorkbookSheets>>(
-  undefined as any
-);
-function WorkbookSheetProvider(props: any) {
-  const value = useState<WorkbookSheets>({} as WorkbookSheets);
-  return (
-    <WorkbookSheetContext.Provider
-      value={value}
-      {...props}
-    ></WorkbookSheetContext.Provider>
-  );
+type SortQuery = {
+  columnId: number;
+  order: string;
+};
+
+type SheetSearchQuery = {
+  sorting?: SortQuery;
+  searchPatterns: Record<number, string | undefined>;
+};
+
+type WorkbookExportView = Record<number, SheetSearchQuery>;
+
+const WorkbookSheetsContext = createContext<WorkbookExportView>({});
+
+function WorkbookSheetsProvider(props: any) {
+  const value = useRef<WorkbookExportView>({});
+
+  return <WorkbookSheetsContext.Provider value={value.current} {...props} />;
 }
-function useWorkbookSheet() {
-  return useContext(WorkbookSheetContext);
+
+function useWorkbookSheets() {
+  return useContext(WorkbookSheetsContext);
 }
-export { useWorkbookSheet, WorkbookSheetProvider };
+
+export { useWorkbookSheets, WorkbookSheetsProvider };
