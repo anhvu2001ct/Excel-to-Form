@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -6,7 +6,6 @@ import { apiEndpoint } from "../../API/endpoint";
 import DefaultImage from "../../data/img/default-img.webp";
 import { Workbook } from "../../types/Workbook";
 import "./EditCard.scss";
-import { useWorkbooksRefresh } from "./WorkbookCards";
 
 type Props = {
   workbook: Workbook;
@@ -17,7 +16,7 @@ type Props = {
 const EditCard = ({ workbook, visible, onClose }: Props) => {
   const [waiting, setWaiting] = useState(false);
   const [title, setTitle] = useState(workbook.name);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(workbook.description);
   const imgRef = useRef<HTMLImageElement>(null);
   const fileRef = useRef<File>();
 
@@ -31,7 +30,7 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
 
       const formData = new FormData();
       formData.append("name", title);
-      formData.append("description", description);
+      formData.append("description", description!);
       if (fileRef.current) formData.append("image", fileRef.current);
 
       const resposne = await fetch(
@@ -59,9 +58,27 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
     <Modal
       title="Edit workbook"
       visible={visible}
-      onCancel={onClose}
-      onOk={updateData}
       confirmLoading={waiting}
+      onCancel={onClose}
+      width={800}
+      footer={[
+        <Button
+          key="submit"
+          type="primary"
+          onClick={onClose}
+          className="text-blue-500"
+        >
+          Cancel
+        </Button>,
+        <Button
+          key="link"
+          type="primary"
+          onClick={updateData}
+          className="bg-blue-500"
+        >
+          Submit
+        </Button>,
+      ]}
     >
       <div className="flex gap-5 max-h-[150px]">
         <div className="w-1/4 object-cover rounded-md relative">
@@ -69,7 +86,11 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
             htmlFor="edit-image"
             className="rounded-md flex items-center justify-center absolute inset-0 z-[2] cursor-pointer transition-all group hover:bg-black/[.2]"
           >
-            <i className="fal fa-upload opacity-50 text-lg group-hover:opacity-100"></i>
+            <i
+              className="fal fa-upload opacity-50
+
+             text-lg group-hover:opacity-100"
+            ></i>
           </label>
           <input
             type="file"
