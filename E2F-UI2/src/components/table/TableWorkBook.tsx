@@ -297,6 +297,7 @@ const TableWorkbook = ({ sheet }: Props) => {
   return (
     <Form form={form} component={false}>
       <Table
+        loading={data === undefined}
         columns={columns}
         dataSource={dataSource}
         pagination={{ pageSize: 10 }}

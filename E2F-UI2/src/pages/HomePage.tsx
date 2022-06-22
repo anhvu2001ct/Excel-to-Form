@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <>
       <div className="py-4">
-        <Breadcrumb>
+        <Breadcrumb className="mb-2 md:mb-0">
           <Breadcrumb.Item>
             <Link to={"/"} className="flex items-center gap-2 ">
               <span>Home</span>

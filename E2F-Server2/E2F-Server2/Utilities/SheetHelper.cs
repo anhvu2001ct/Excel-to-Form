@@ -218,7 +218,7 @@ namespace E2F_Server2.Utilities
                         )
                         select f.Id, f.Value, f.RowId, r.CreatedAt
                         from sorted
-	                        left join SheetRows r on r.Id=rows.RowId
+	                        left join SheetRows r on r.Id=sorted.Id
 	                        left join SheetFields f on f.RowId=r.Id
 	                        left join SheetColumns c on c.Id=f.ColumnId
                         order by r.Id, c.ColumnIndex";

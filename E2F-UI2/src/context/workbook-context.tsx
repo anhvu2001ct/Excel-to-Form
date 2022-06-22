@@ -15,9 +15,9 @@ type WorkbookExportView = Record<number, SheetSearchQuery>;
 const WorkbookSheetsContext = createContext<WorkbookExportView>({});
 
 function WorkbookSheetsProvider(props: any) {
-  const value = useRef<WorkbookExportView>({});
+  const value = {};
 
-  return <WorkbookSheetsContext.Provider value={value.current} {...props} />;
+  return <WorkbookSheetsContext.Provider value={value} {...props} />;
 }
 
 function useWorkbookSheets() {

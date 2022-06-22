@@ -23,6 +23,7 @@ const LayoutMain = () => {
     <div className="container">
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
+          breakpoint="lg"
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}

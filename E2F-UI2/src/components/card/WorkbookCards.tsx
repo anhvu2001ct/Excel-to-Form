@@ -50,7 +50,7 @@ const WorkbookCards = () => {
       <WorkbookCardsContext.Provider value={refreshData}>
         <Row gutter={[24, 24]}>
           {workbook?.map((item) => (
-            <Col span={6} key={item.id}>
+            <Col span={24} sm={12} lg={8} xxl={6} key={item.id}>
               <CardItem data={item} />
             </Col>
           ))}

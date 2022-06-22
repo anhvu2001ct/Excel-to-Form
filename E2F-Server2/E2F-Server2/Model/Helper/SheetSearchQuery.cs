@@ -9,6 +9,6 @@
     public class SheetSearchQuery
     {
         public SheetSearchSortQuery? Sorting { get; set; }
-        public Dictionary<int, string> SearchPatterns { get; set; } = null!;
+        public Dictionary<int, string?> SearchPatterns { get; set; } = null!;
     }
 }
