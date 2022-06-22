@@ -115,7 +115,7 @@ const WorkbookDetailPage = () => {
           <Divider orientation="left" className="py-4">
             List of sheet
           </Divider>
-          <div className="w-full flex flex-col justify-center gap-4">
+          <div className="w-full flex flex-col gap-4">
             {workbookSheets.sheets.map((sheet) => (
               <SheetDetail key={sheet.id} sheet={sheet} />
             ))}

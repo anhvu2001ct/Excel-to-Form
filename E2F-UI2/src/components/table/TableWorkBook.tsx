@@ -96,6 +96,7 @@ const TableWorkbook = ({ sheet }: Props) => {
             }}
             icon={<SearchOutlined />}
             size="small"
+            className="text-blue-500"
             style={{ width: 90 }}
           >
             Search

@@ -1,4 +1,4 @@
-import { Col, Collapse, Row, Tag } from "antd";
+import { Col, Collapse, Divider, Row, Tag } from "antd";
 import { createContext, useContext, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
@@ -32,7 +32,6 @@ export default function SheetDetail({ sheet }: Props) {
       toast.error(error.message);
     }
   };
-
   const handleChange = (keyList: any) => {
     if (keyList.length && !alreadyOpened.current) {
       alreadyOpened.current = true;
@@ -50,7 +49,9 @@ export default function SheetDetail({ sheet }: Props) {
       <Collapse.Panel
         header={
           <Tag color="blue">
-            <span className="max-w-[200px] line-clamp-1 text-base">Name</span>
+            <span className="max-w-[200px] line-clamp-1 text-base">
+              {sheet.name}
+            </span>
           </Tag>
         }
         key={sheet.id}
@@ -58,9 +59,12 @@ export default function SheetDetail({ sheet }: Props) {
         <sheetDataContext.Provider value={[data, refreshData]}>
           <Row>
             <Col span={24}>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col items-start gap-2 ">
                 <TableWorkbook sheet={sheet} />
-                <FormMain />
+                <Divider orientation="left" className="py-4">
+                  Form
+                </Divider>
+                <FormMain sheet={sheet} />
               </div>
             </Col>
           </Row>
