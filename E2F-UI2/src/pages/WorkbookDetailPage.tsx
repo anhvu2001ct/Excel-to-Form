@@ -1,6 +1,6 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Collapse, Divider, Modal } from "antd";
-import { useEffect, useId, useState } from "react";
+import { Breadcrumb, Button, Divider } from "antd";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../API/endpoint";
@@ -55,9 +55,10 @@ const WorkbookDetailPage = () => {
     window.location.assign(apiEndpoint(`export/origin/${idWorkbook}`));
   };
   const exportCurrentView = async (exportedView: typeof exportView) => {
+    const toastId = toast.loading("We are processing your request");
     try {
       setExportActive(exportActive | 2);
-      toast.info("We are processing your request..");
+      console.log(exportedView);
       const response = await fetch(
         apiEndpoint("export", "partial", idWorkbook!),
         {
@@ -75,13 +76,31 @@ const WorkbookDetailPage = () => {
       a.href = tempUrl;
       a.download = `${workbookSheets?.workbook.name}.${fileExt}`;
       document.body.appendChild(a);
-      toast.success("Your file shall be ready now");
+      toast.update(toastId, {
+        render: "Your file shall be ready now",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+        closeButton: true,
+        draggable: true,
+        pauseOnFocusLoss: false,
+        pauseOnHover: false,
+      });
       a.click();
       a.remove();
       setExportActive(0);
     } catch (_err) {
       const error = _err as Error;
-      toast.error(error.message);
+      toast.update(toastId, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+        closeButton: true,
+        draggable: true,
+        pauseOnFocusLoss: false,
+        pauseOnHover: false,
+      });
     }
   };
   return (

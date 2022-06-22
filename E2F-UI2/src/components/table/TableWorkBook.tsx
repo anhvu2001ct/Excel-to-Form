@@ -10,12 +10,11 @@ import {
   Space,
   Table,
 } from "antd";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import { useWorkbookSheets } from "../../context/workbook-context";
 import { Sheet } from "../../types/Sheet";
-import { SheetRow } from "../../types/SheetRow";
 import { useSheetData } from "../sheet/SheetDetail";
 
 type Props = {
@@ -54,7 +53,7 @@ const TableWorkbook = ({ sheet }: Props) => {
     dataIndex: col.id,
     width: 200,
     sorter: (a: any, b: any) => compareStr(a[col.id], b[col.id]),
-    sortOrder: sortedInfo.columnKey === col.id ? sortedInfo.order : null,
+    sortedInfo: sortedInfo.columnKey === col.id ? sortedInfo.order : null,
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
