@@ -7,20 +7,19 @@ type Props = {
   sheet: Sheet;
 };
 const FormMain = ({ sheet }: Props) => {
-  console.log("FormMain ~ sheet", sheet);
   const [form] = Form.useForm();
   const [_, refreshData] = useSheetData();
   const onFinish = async (values: any) => {
+    console.log();
     try {
       const formData = new FormData();
-      let i = 0;
-      for (const iterator in values) {
+      Object.values(values).forEach((val, index) => {
         formData.append(
-          i.toString(),
-          values[iterator] === undefined ? "" : values[iterator]
+          (++index).toString(),
+          val === undefined ? "" : (val as string)
         );
-        i++;
-      }
+      });
+
       const response = await fetch(apiEndpoint("sheet/add", `${sheet.id}`), {
         method: "POST",
         body: formData,

@@ -4,7 +4,7 @@ import { apiEndpoint } from "../../API/endpoint";
 import { useWorkbookImport } from "../../context/workbookImport-context";
 import { SheetImport } from "../../types/SheetImport";
 import { toast } from "react-toastify";
-
+import "./SheetImportItem.scss";
 type Props = {
   index: number;
 };
@@ -58,7 +58,7 @@ const SheetImportItem = ({ index }: Props) => {
 
   return (
     <div
-      className={`flex items-end gap-7 border  rounded-md p-4 transition-all duration-300 ${
+      className={`modal-sheet-item flex items-end gap-7 border  rounded-md p-4 transition-all duration-300 ${
         !sheetImport.valid ? "border-red-500" : "border-green-400"
       }`}
     >
@@ -71,7 +71,7 @@ const SheetImportItem = ({ index }: Props) => {
           </Tag>
         </Form.Item>
       </div>
-      <div className="flex-1 flex items-center gap-4">
+      <div className="flex-1 flex items-center md:gap-4 gap-2">
         <Form.Item label="Start Row" required>
           <InputNumber
             placeholder="Enter start row"

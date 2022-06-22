@@ -1,0 +1,14 @@
+@media screen and (max-width: 641px) {
+  .modal-sheet-item {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    button {
+      max-width: 100%;
+      width: 100%;
+    }
+    label {
+      font-size: 12px;
+    }
+  }
+}
