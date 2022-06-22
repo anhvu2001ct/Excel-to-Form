@@ -7,17 +7,16 @@ type Props = {
   sheet: Sheet;
 };
 const FormMain = ({ sheet }: Props) => {
-  console.log("FormMain ~ sheet", sheet);
   const [form] = Form.useForm();
   const [_, refreshData] = useSheetData();
   const onFinish = async (values: any) => {
+    console.log("onFinish ~ values", values);
     try {
       const formData = new FormData();
       Object.values(values).forEach((val, index) => {
-        formData.append(
-          sheet.columns[index].id.toString(),
-          val === undefined ? "" : (val as string)
-        );
+        if (val) {
+          formData.append(sheet.columns[index].id.toString(), val as string);
+        }
       });
 
       const response = await fetch(apiEndpoint("sheet/add", `${sheet.id}`), {
@@ -28,6 +27,7 @@ const FormMain = ({ sheet }: Props) => {
       if (!response.ok) throw new Error(result.message);
       toast.success(result.message);
       refreshData();
+      form.resetFields();
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
@@ -63,6 +63,7 @@ const FormMain = ({ sheet }: Props) => {
             >
               {col.columnType === "select" ? (
                 <Select
+                  defaultValue={col.selectOptions![0]}
                   className="max-w-[300px]"
                   placeholder={`Enter yout ${col.name}`}
                 >
@@ -73,7 +74,7 @@ const FormMain = ({ sheet }: Props) => {
                   ))}
                 </Select>
               ) : (
-                <Input name={col.name} placeholder={`Enter yout ${col.name}`} />
+                <Input name={col.name} placeholder={`Enter your ${col.name}`} />
               )}
             </Form.Item>
           );

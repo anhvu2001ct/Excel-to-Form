@@ -5,7 +5,7 @@ import { apiEndpoint } from "../../API/endpoint";
 import { Sheet } from "../../types/Sheet";
 import { SheetRow } from "../../types/SheetRow";
 import FormMain from "../form/FormMain";
-import TableWorkbook from "../table/TableWorkBook";
+import TableWorkbook from "../table/TableWorkbook";
 
 type Props = {
   sheet: Sheet;

@@ -12,6 +12,15 @@
 textarea.ant-input[disabled] {
   cursor: default;
 }
+//custome humberger
+.ant-layout-sider-zero-width-trigger.ant-layout-sider-zero-width-trigger-left {
+  opacity: 0.3;
+  transition: 0.25s linear;
+  &:hover {
+    opacity: 1;
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .ant-tooltip.ant-menu-inline-collapsed-tooltip.ant-tooltip-placement-right {
     display: none;
@@ -26,5 +35,12 @@ textarea.ant-input[disabled] {
       display: block;
       width: 100%;
     }
+    //customer sider
+  }
+  .ant-layout-sider.ant-layout-sider-light.ant-layout-sider-below {
+    position: fixed;
+    z-index: 99;
+    top: 0px;
+    bottom: 0px;
   }
 }
