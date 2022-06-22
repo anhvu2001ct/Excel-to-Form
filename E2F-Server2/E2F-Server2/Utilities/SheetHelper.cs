@@ -172,12 +172,12 @@ namespace E2F_Server2.Utilities
             return GetListRows(li);
         }
 
-        public static async Task<List<SheetRow>> GetSheetData(int sheetId, List<KeyValuePair<int, string>> patterns)
+        public static async Task<List<SheetRow>> GetSheetData(int sheetId, SheetSearchQuery searchQuery)
         {
             List<KeyValuePair<string, string>> dataToCases = new();
             var parameters = new DynamicParameters();
             int cnt = -1;
-            foreach (var pattern in patterns)
+            foreach (var pattern in searchQuery.SearchPatterns)
             {
                 if (pattern.Value == null) continue;
                 var cid = $"cid{++cnt}";
@@ -189,6 +189,16 @@ namespace E2F_Server2.Utilities
 
             if (dataToCases.Count == 0) return await GetFullSheetData(sheetId);
 
+            var sortQuery = searchQuery.Sorting == null ?
+                            @"select * from rows" :
+                            $@"select r.Id
+                                from rows r
+                                left join SheetFields f on f.RowId=r.Id
+                                where f.ColumnId=@sortColumnId
+                                order by f.Value {searchQuery.Sorting.Order}";
+
+            if (searchQuery.Sorting != null) parameters.Add("sortColumnId", searchQuery.Sorting.ColumnId);
+
             var query = @$"with fields as (
 	                        select
 		                        RowId,
@@ -199,13 +209,15 @@ namespace E2F_Server2.Utilities
 	                        where
 		                        c.SheetId=@sheetId
                         ), rows as (
-	                        select RowId
+	                        select RowId as Id
 	                        from fields
 	                        group by RowId
 	                        having min(Matched)=1
+                        ), sorted as (
+                           {sortQuery}
                         )
                         select f.Id, f.Value, f.RowId, r.CreatedAt
-                        from rows
+                        from sorted
 	                        left join SheetRows r on r.Id=rows.RowId
 	                        left join SheetFields f on f.RowId=r.Id
 	                        left join SheetColumns c on c.Id=f.ColumnId

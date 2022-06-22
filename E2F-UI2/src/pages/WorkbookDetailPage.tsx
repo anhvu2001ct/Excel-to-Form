@@ -1,27 +1,30 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Collapse, Divider, Tag } from "antd";
-import { useEffect, useId } from "react";
+import { Breadcrumb, Button, Collapse, Divider } from "antd";
+import { useEffect, useId, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../API/endpoint";
 import HeaderWorkBook from "../components/modal/HeaderWorkBook";
-import WorkbookSheet from "../components/workbook/WorkBookItem";
-const { Panel } = Collapse;
+import SheetDetail from "../components/sheet/SheetDetail";
 import {
-  useWorkbookSheet,
-  WorkbookSheetProvider,
+  useWorkbookSheets,
+  WorkbookSheetsProvider,
 } from "../context/workbook-context";
+import { WorkbookSheets } from "../types/WorkbookSheets";
+const { Panel } = Collapse;
 function _WorkbookDetailPage() {
   return (
-    <WorkbookSheetProvider>
+    <WorkbookSheetsProvider>
       <WorkbookDetailPage></WorkbookDetailPage>;
-    </WorkbookSheetProvider>
+    </WorkbookSheetsProvider>
   );
 }
 const WorkbookDetailPage = () => {
-  const [workbookSheet, setWorkbookSheet] = useWorkbookSheet();
+  const [workbookSheets, setWorkbookSheets] = useState<WorkbookSheets>();
+  const exportView = useWorkbookSheets();
   const param = useParams();
   const idWorkbook = param.id;
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -30,7 +33,13 @@ const WorkbookDetailPage = () => {
         );
         const result = await response.json();
         if (!response.ok) throw new Error(result.message);
-        setWorkbookSheet(result.message);
+        const wb = result.message as WorkbookSheets;
+        for (const sheet of wb.sheets) {
+          exportView[sheet.id] = {
+            searchPatterns: {},
+          };
+        }
+        setWorkbookSheets(wb);
       } catch (_error) {
         const error = _error as Error;
         toast.error(error.message);
@@ -43,6 +52,32 @@ const WorkbookDetailPage = () => {
   };
   const ExportOrigin = () => {
     window.location.assign(apiEndpoint(`export/origin/${idWorkbook}`));
+  };
+  const ExportView = async () => {
+    try {
+      const response = await fetch(
+        apiEndpoint("export", "partial", idWorkbook!),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(exportView),
+        }
+      );
+      if (!response.ok) throw new Error((await response.json()).message);
+      const tempUrl = window.URL.createObjectURL(await response.blob());
+      const fileExt = workbookSheets?.workbook.fileName.split(".").pop();
+      const a = document.createElement("a");
+      a.href = tempUrl;
+      a.download = `${workbookSheets?.workbook.name}.${fileExt}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (_err) {
+      const error = _err as Error;
+      toast.error(error.message);
+    }
   };
   return (
     <div className="py-4">
@@ -74,34 +109,19 @@ const WorkbookDetailPage = () => {
           Export origin
         </Button>
       </div>
-      <div className="w-full mt-3">
-        <HeaderWorkBook workbook={workbookSheet.workbook} disable={true} />
-        <Divider orientation="left" className="py-4">
-          List of sheet
-        </Divider>
-        <div className="w-full flex flex-col justify-center gap-4">
-          {workbookSheet.sheets?.map((sheet) => (
-            <Collapse
-              key={sheet.id}
-              expandIconPosition={"end"}
-              className={`shadow-[0px_2px_8px_0px_rgba(99,99,99,0.2)]`}
-            >
-              <Panel
-                header={
-                  <Tag color="blue">
-                    <span className="max-w-[200px] line-clamp-1 text-base">
-                      Name
-                    </span>
-                  </Tag>
-                }
-                key={sheet.id}
-              >
-                <WorkbookSheet key={sheet.id} sheet={sheet} />
-              </Panel>
-            </Collapse>
-          ))}
+      {workbookSheets && (
+        <div className="w-full mt-3">
+          <HeaderWorkBook workbook={workbookSheets.workbook} disable={true} />
+          <Divider orientation="left" className="py-4">
+            List of sheet
+          </Divider>
+          <div className="w-full flex flex-col justify-center gap-4">
+            {workbookSheets.sheets.map((sheet) => (
+              <SheetDetail key={sheet.id} sheet={sheet} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

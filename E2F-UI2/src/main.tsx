@@ -8,6 +8,10 @@ import { ToastContainer } from "react-toastify";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
     <App />
-    <ToastContainer></ToastContainer>
+    <ToastContainer
+      autoClose={3000}
+      pauseOnFocusLoss={false}
+      pauseOnHover={false}
+    />
   </>
 );

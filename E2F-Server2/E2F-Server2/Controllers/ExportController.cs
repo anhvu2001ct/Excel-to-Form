@@ -71,7 +71,7 @@ namespace E2F_Server2.Controllers
         }
 
         [HttpPost("partial/{workbookId:int}")]
-        public async Task<IActionResult> ExportPartial(int workbookId, Dictionary<int, List<KeyValuePair<int, string>>>? parts)
+        public async Task<IActionResult> ExportPartial(int workbookId, Dictionary<int, SheetSearchQuery>? parts)
         {
             try
             {

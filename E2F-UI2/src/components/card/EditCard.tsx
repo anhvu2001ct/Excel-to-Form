@@ -1,4 +1,4 @@
-import { Button, Modal } from "antd";
+import { Button, message, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -33,19 +33,22 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
       formData.append("description", description!);
       if (fileRef.current) formData.append("image", fileRef.current);
 
-      const resposne = await fetch(
+      const response = await fetch(
         apiEndpoint("workbook", "edit", workbook.id.toString()),
         {
           method: "PUT",
           body: formData,
         }
       );
+
+      if (!response.ok) throw new Error((await response.json()).message);
+      onClose();
+      message.info("Edited workbook");
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
     } finally {
       setWaiting(false);
-      onClose();
     }
   };
   const changeImage = (e: React.ChangeEvent<HTMLInputElement>) => {

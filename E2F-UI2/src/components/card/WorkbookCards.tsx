@@ -27,8 +27,7 @@ const WorkbookCards = () => {
     searchRef.current = value;
     try {
       let response = null;
-      if (!value)
-        response = await fetch(apiEndpoint("workbook", "get/all"), {});
+      if (!value) response = await fetch(apiEndpoint("workbook", "get/all"));
       else {
         const params = new URLSearchParams();
         params.append("name", value);
@@ -49,7 +48,7 @@ const WorkbookCards = () => {
     <div>
       <SearchInput onSearch={updateData} />
       <WorkbookCardsContext.Provider value={refreshData}>
-        <Row gutter={[24, 24]}> 
+        <Row gutter={[24, 24]}>
           {workbook?.map((item) => (
             <Col span={6} key={item.id}>
               <CardItem data={item} />

@@ -52,7 +52,7 @@ namespace E2F_Server2.Utilities
             return res;
         }
 
-        public static async Task UpdateExcelWithData(ExcelWorksheets sheets, Workbook workbook, Dictionary<int, List<KeyValuePair<int, string>>>? parts = null)
+        public static async Task UpdateExcelWithData(ExcelWorksheets sheets, Workbook workbook, Dictionary<int, SheetSearchQuery>? parts = null)
         {
             var query = "select * from Sheets where WorkbookId=@Id";
             var li = await Program.Sql.QueryAsync<Sheet>(query, new { workbook.Id });
