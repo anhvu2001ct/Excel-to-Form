@@ -17,3 +17,14 @@ textarea.ant-input[disabled] {
     display: none;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .btn-container {
+    margin: 10px 0;
+    flex-direction: column;
+    button {
+      display: block;
+      width: 100%;
+    }
+  }
+}
