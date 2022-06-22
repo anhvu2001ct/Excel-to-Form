@@ -187,15 +187,17 @@ namespace E2F_Server2.Utilities
                 parameters.Add(cval, pattern.Value);
             }
 
-            if (dataToCases.Count == 0) return await GetFullSheetData(sheetId);
-
             var sortQuery = searchQuery.Sorting == null ?
-                            @"select * from rows" :
-                            $@"select r.Id
-                                from rows r
+                            @"select
+		                        Id,
+		                        ROW_NUMBER() over(order by Id) as rn
+                                from valid_rows" :
+                            $@"select
+                                r.Id,
+		                        ROW_NUMBER() over(order by f.Value {searchQuery.Sorting.Order}) as rn
+                                from valid_rows r
                                 left join SheetFields f on f.RowId=r.Id
-                                where f.ColumnId=@sortColumnId
-                                order by f.Value {searchQuery.Sorting.Order}";
+                                where f.ColumnId=@sortColumnId";
 
             if (searchQuery.Sorting != null) parameters.Add("sortColumnId", searchQuery.Sorting.ColumnId);
 
@@ -208,7 +210,7 @@ namespace E2F_Server2.Utilities
 		                        left join SheetFields f on f.ColumnId = c.Id
 	                        where
 		                        c.SheetId=@sheetId
-                        ), rows as (
+                        ), valid_rows as (
 	                        select RowId as Id
 	                        from fields
 	                        group by RowId
@@ -217,11 +219,11 @@ namespace E2F_Server2.Utilities
                            {sortQuery}
                         )
                         select f.Id, f.Value, f.RowId, r.CreatedAt
-                        from sorted
-	                        left join SheetRows r on r.Id=sorted.Id
+                        from sorted s
+	                        left join SheetRows r on r.Id=s.Id
 	                        left join SheetFields f on f.RowId=r.Id
 	                        left join SheetColumns c on c.Id=f.ColumnId
-                        order by r.Id, c.ColumnIndex";
+                        order by s.rn, c.ColumnIndex";
             parameters.Add("sheetId", sheetId);
             var li = await Program.Sql.QueryAsync<SheetFieldSelected>(query, parameters);
             return GetListRows(li);

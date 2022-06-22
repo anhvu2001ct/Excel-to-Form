@@ -32,6 +32,8 @@ namespace E2F_Server2.Utilities
 
         public static string GetCasesFromPatterns(List<KeyValuePair<string, string>> patterns)
         {
+            if (patterns.Count == 0) return "1 as Matched";
+
             var res = new StringBuilder("");
             foreach (var pattern in patterns)
             {

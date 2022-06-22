@@ -12,6 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       autoClose={3000}
       pauseOnFocusLoss={false}
       pauseOnHover={false}
+      newestOnTop={true}
     />
   </>
 );

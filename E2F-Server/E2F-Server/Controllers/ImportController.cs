@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System;
+using Dapper;
 using E2F_Server.Model;
 using E2F_Server.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,7 @@ namespace E2F_Server.Controllers
 
                 if (startColNum > endColNum)
                 {
+
                     (startCol, endCol) = (endCol, startCol);
                     (startColNum, endColNum) = (endColNum, startColNum);
                 }
@@ -82,7 +84,7 @@ namespace E2F_Server.Controllers
                     success = false,
                     message = "Column field(s) cannot exceed 'OZZ'"
                 });
-                
+
                 if (endColNum - startColNum + 1 > Constraint.UPPER_COLUMN_RANGE) return BadRequest(new
                 {
                     success = false,

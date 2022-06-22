@@ -39,6 +39,7 @@ const NavigateItem = ({ title, icon, position, href, input }: Props) => {
             type="file"
             id="input-file"
             className="navigate-input"
+            accept=".xlsx"
             onChange={handleFile}
             onClick={(e) => ((e.target as HTMLInputElement).value = "")}
           />

@@ -92,3 +92,9 @@
     }
   }
 }
+.sheet-search-spinner {
+  align-self: center;
+  & > .spinner {
+    border-color: transparent rgb(209 88 21) !important;
+  }
+}

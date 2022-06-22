@@ -74,7 +74,7 @@ export default function ExportViewModal({
         <Button
           key="link"
           type="primary"
-          onClick={onCancel}
+          onClick={handleOk}
           className="bg-blue-500"
         >
           Submit

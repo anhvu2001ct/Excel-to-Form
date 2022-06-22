@@ -24,7 +24,7 @@ const LayoutMain = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
           breakpoint="xs"
-          collapsedWidth="0"
+          collapsedWidth="10"
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
