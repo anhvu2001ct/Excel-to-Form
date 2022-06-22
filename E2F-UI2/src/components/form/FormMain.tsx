@@ -7,15 +7,15 @@ type Props = {
   sheet: Sheet;
 };
 const FormMain = ({ sheet }: Props) => {
+  console.log("FormMain ~ sheet", sheet);
   const [form] = Form.useForm();
   const [_, refreshData] = useSheetData();
   const onFinish = async (values: any) => {
-    console.log();
     try {
       const formData = new FormData();
       Object.values(values).forEach((val, index) => {
         formData.append(
-          (++index).toString(),
+          sheet.columns[index].id.toString(),
           val === undefined ? "" : (val as string)
         );
       });
