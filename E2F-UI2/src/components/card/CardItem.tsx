@@ -49,9 +49,15 @@ const CardItem = ({ data }: Props) => {
   return (
     <Card
       size="small"
-      cover={<img alt="default" src={data.url || DefaultImage} />}
+      cover={
+        <img
+          onClick={handleDetail}
+          alt="default"
+          src={data.url || DefaultImage}
+        />
+      }
+      hoverable
       actions={[
-        <InfoCircleOutlined key={"detail"} onClick={handleDetail} />,
         <EditOutlined key="edit" onClick={() => setEditVisible(true)} />,
         <Popconfirm
           key="delete"

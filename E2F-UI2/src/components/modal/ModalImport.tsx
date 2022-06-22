@@ -8,7 +8,7 @@ import {
   WorkbookImportProvider,
 } from "../../context/workbookImport-context";
 import EventEmiiter from "../../lib/EventEmitter";
-import HeaderWorkBook from "./HeaderWorkBook";
+import HeaderWorkbook from "./HeaderWorkBook";
 import "./Modal.scss";
 import SheetImportItem from "./SheetImportItem";
 type Props = {
@@ -61,7 +61,7 @@ function ModalImport({ onClose, file }: Props) {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-      toast.success("Submited succesfully");
+      toast.success("Created succesfully");
       saveEvent.emit(undefined);
       onClose();
     } catch (_error) {
@@ -82,7 +82,7 @@ function ModalImport({ onClose, file }: Props) {
       onCancel={onClose}
     >
       <div className="modal-container">
-        <HeaderWorkBook workbook={_wb()?.workbook!} />
+        <HeaderWorkbook workbook={_wb()?.workbook!} />
         <Divider orientation="left">Information of file</Divider>
         <div className="flex flex-col gap-5">
           {workbook!.sheets.map((item, index) => (

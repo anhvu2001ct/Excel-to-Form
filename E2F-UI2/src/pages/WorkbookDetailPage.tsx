@@ -1,9 +1,10 @@
 import { DownloadOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Collapse, Divider } from "antd";
+import { Breadcrumb, Button, Collapse, Divider, Modal } from "antd";
 import { useEffect, useId, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../API/endpoint";
+import ExportViewModal from "../components/modal/ExportViewModal";
 import HeaderWorkBook from "../components/modal/HeaderWorkBook";
 import SheetDetail from "../components/sheet/SheetDetail";
 import {
@@ -11,7 +12,6 @@ import {
   WorkbookSheetsProvider,
 } from "../context/workbook-context";
 import { WorkbookSheets } from "../types/WorkbookSheets";
-const { Panel } = Collapse;
 function _WorkbookDetailPage() {
   return (
     <WorkbookSheetsProvider>
@@ -20,8 +20,9 @@ function _WorkbookDetailPage() {
   );
 }
 const WorkbookDetailPage = () => {
-  const [workbookSheets, setWorkbookSheets] = useState<WorkbookSheets>();
   const exportView = useWorkbookSheets();
+  const [workbookSheets, setWorkbookSheets] = useState<WorkbookSheets>();
+  const [exportActive, setExportActive] = useState(0);
   const param = useParams();
   const idWorkbook = param.id;
 
@@ -47,14 +48,16 @@ const WorkbookDetailPage = () => {
     }
     fetchData();
   }, []);
-  const ExportFullData = () => {
+  const exportFullData = () => {
     window.location.assign(apiEndpoint(`export/full/${idWorkbook}`));
   };
-  const ExportOrigin = () => {
+  const exportOrigin = () => {
     window.location.assign(apiEndpoint(`export/origin/${idWorkbook}`));
   };
-  const ExportView = async () => {
+  const exportCurrentView = async (exportedView: typeof exportView) => {
     try {
+      setExportActive(exportActive | 2);
+      toast.info("We are processing your request..");
       const response = await fetch(
         apiEndpoint("export", "partial", idWorkbook!),
         {
@@ -62,7 +65,7 @@ const WorkbookDetailPage = () => {
             "Content-Type": "application/json",
           },
           method: "POST",
-          body: JSON.stringify(exportView),
+          body: JSON.stringify(exportedView),
         }
       );
       if (!response.ok) throw new Error((await response.json()).message);
@@ -72,8 +75,10 @@ const WorkbookDetailPage = () => {
       a.href = tempUrl;
       a.download = `${workbookSheets?.workbook.name}.${fileExt}`;
       document.body.appendChild(a);
+      toast.success("Your file shall be ready now");
       a.click();
       a.remove();
+      setExportActive(0);
     } catch (_err) {
       const error = _err as Error;
       toast.error(error.message);
@@ -91,36 +96,53 @@ const WorkbookDetailPage = () => {
           <span>Detail Workbook</span>
         </Breadcrumb.Item>
       </Breadcrumb>
-      <div className="flex items-center gap-2 justify-end" key={useId()}>
-        <Button
-          type="primary"
-          className="text-blue-500"
-          icon={<DownloadOutlined />}
-          onClick={ExportFullData}
-        >
-          Export all
-        </Button>
-        <Button
-          type="primary"
-          className="text-blue-500"
-          icon={<DownloadOutlined />}
-          onClick={ExportOrigin}
-        >
-          Export origin
-        </Button>
-      </div>
       {workbookSheets && (
-        <div className="w-full mt-3">
-          <HeaderWorkBook workbook={workbookSheets.workbook} disable={true} />
-          <Divider orientation="left" className="py-4">
-            List of sheet
-          </Divider>
-          <div className="w-full flex flex-col justify-center gap-4">
-            {workbookSheets.sheets.map((sheet) => (
-              <SheetDetail key={sheet.id} sheet={sheet} />
-            ))}
+        <>
+          <div className="flex items-center gap-2 justify-end">
+            <Button
+              type="primary"
+              className="text-blue-500"
+              icon={<DownloadOutlined />}
+              onClick={() => setExportActive(exportActive | 1)}
+            >
+              Export view
+            </Button>
+            <ExportViewModal
+              sheets={workbookSheets.sheets}
+              visible={(exportActive & 1) != 0}
+              loading={(exportActive & 2) != 0}
+              onOk={exportCurrentView}
+              onCancel={() => setExportActive(exportActive & ~1)}
+            />
+            <Button
+              type="primary"
+              className="text-blue-500"
+              icon={<DownloadOutlined />}
+              onClick={exportFullData}
+            >
+              Export all
+            </Button>
+            <Button
+              type="primary"
+              className="text-blue-500"
+              icon={<DownloadOutlined />}
+              onClick={exportOrigin}
+            >
+              Export origin
+            </Button>
           </div>
-        </div>
+          <div className="w-full mt-3">
+            <HeaderWorkBook workbook={workbookSheets.workbook} disable={true} />
+            <Divider orientation="left" className="py-4">
+              List of sheet
+            </Divider>
+            <div className="w-full flex flex-col justify-center gap-4">
+              {workbookSheets.sheets.map((sheet) => (
+                <SheetDetail key={sheet.id} sheet={sheet} />
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

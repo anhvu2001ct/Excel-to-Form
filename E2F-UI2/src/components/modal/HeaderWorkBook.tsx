@@ -5,7 +5,7 @@ import { Workbook } from "../../types/Workbook";
 import "./HeaderWorkBook.scss";
 type Props = {
   workbook: Workbook;
-  disable: boolean;
+  disable?: boolean;
 };
 export default function HeaderWorkBook({ workbook, disable = false }: Props) {
   const [title, setTitle] = useState(workbook.name);
