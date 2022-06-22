@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import { Sheet } from "../../types/Sheet";
 import { SheetRow } from "../../types/SheetRow";
+import FormMain from "../form/FormMain";
 import TableWorkbook from "../table/TableWorkbook";
 
 type Props = {
@@ -59,6 +60,7 @@ export default function SheetDetail({ sheet }: Props) {
             <Col span={24}>
               <div className="flex flex-col gap-2">
                 <TableWorkbook sheet={sheet} />
+                <FormMain />
               </div>
             </Col>
           </Row>
