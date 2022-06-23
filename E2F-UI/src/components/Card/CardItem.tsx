@@ -5,7 +5,7 @@ import DateIcon from "../../data/img/calendar-icon.png";
 import { Workbook } from "../../types/Wordbook";
 import Dropdown from "../common/dropdown/Dropdown";
 import EditCard from "./EditCard";
-
+import "./Card.scss";
 interface Props extends Workbook {
   onDelete: (id: number) => void;
 }

@@ -25,9 +25,11 @@ export default function HeaderWorkBook({ workbook, disable = false }: Props) {
             title?.length < 1 ? "error" : ""
           }`}
         >
-          <label htmlFor="header-name" className="header-top-label">
-            <i className="fas fa-pen-alt"></i>
-          </label>
+          {!disable && (
+            <label htmlFor="header-name" className="header-top-label">
+              <i className="fas fa-pen-alt"></i>
+            </label>
+          )}
           <input
             placeholder="Enter title"
             disabled={disable}
@@ -49,7 +51,7 @@ export default function HeaderWorkBook({ workbook, disable = false }: Props) {
           value={description}
           onChange={(e) => {
             const value = e.target.value;
-            workbook.description = value ? value : undefined;
+            workbook.description = value ? value : "";
             setDescription(value);
           }}
         />

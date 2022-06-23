@@ -77,14 +77,16 @@ const CardItem = ({ data }: Props) => {
       <Meta
         title={
           <div className="flex items-start flex-col gap-2 mb-2">
-            <h3 className="text-lg font-medium line-clamp-2">{data.name}</h3>
+            <h3 className="text-lg font-medium line-clamp-1 whitespace-normal w-full">
+              {data.name}
+            </h3>
             <div className="flex items-center justify-between gap-1">
               <img srcSet={DateIcon} className="w-4 h-4 object-cover" />
               <span className="text-sm">{createdDate}</span>
             </div>
           </div>
         }
-        description={<p className="line-clamp-3">{data.description}</p>}
+        description={<p className="line-clamp-3">{data.description || ""}</p>}
       />
       <EditCard workbook={data} visible={editVisible} onClose={onCloseEdit} />
     </Card>

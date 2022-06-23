@@ -103,6 +103,7 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
             className="hidden"
             onChange={changeImage}
           />
+          
           <img
             ref={imgRef}
             src={workbook.url || DefaultImage}
