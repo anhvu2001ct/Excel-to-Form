@@ -30,22 +30,16 @@ export default function ExportViewModal({
   );
 
   const exportView = useWorkbookSheets();
-  const [indeterminate, setIndeterminate] = useState(false);
-  const [checkAll, setCheckAll] = useState(true);
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>(
     options.map((o) => o.value)
   );
 
   const onChange = (list: CheckboxValueType[]) => {
     setCheckedList(list);
-    setIndeterminate(list.length < options.length);
-    setCheckAll(list.length === options.length);
   };
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     setCheckedList(e.target.checked ? options.map((o) => o.value) : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
   };
 
   const handleOk = () => {
@@ -82,9 +76,13 @@ export default function ExportViewModal({
       ]}
     >
       <Checkbox
-        indeterminate={indeterminate}
+        indeterminate={
+          checkedList.length > 0 && checkedList.length < options.length
+        }
         onChange={onCheckAllChange}
-        checked={checkAll}
+        checked={
+          checkedList.length > 0 && checkedList.length === options.length
+        }
       >
         Check all
       </Checkbox>
