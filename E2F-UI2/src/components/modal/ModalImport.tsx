@@ -8,7 +8,7 @@ import {
   WorkbookImportProvider,
 } from "../../context/workbookImport-context";
 import EventEmiiter from "../../lib/EventEmitter";
-import HeaderWorkbook from "./HeaderWorkBook";
+import HeaderWorkbook from "./HeaderWorkbook";
 import "./Modal.scss";
 import SheetImportItem from "./SheetImportItem";
 type Props = {
