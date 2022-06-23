@@ -76,8 +76,9 @@ const SheetImportItem = ({ sheetImport }: Props) => {
             placeholder="Enter start row"
             min={1}
             onChange={(value) => {
+              (sheetImport.valid = false),
+                (sheetImport.sheet.headerStartRow = value);
               setStartRow(value);
-              sheetImport.sheet.headerStartRow = value;
             }}
             value={startRow}
           />
@@ -88,8 +89,9 @@ const SheetImportItem = ({ sheetImport }: Props) => {
             onChange={(e) => {
               const value = e.target.value.toUpperCase();
               if (!validRow(value)) return;
-              setStartCol(value);
+              sheetImport.valid = false;
               sheetImport.sheet.headerStartCol = value;
+              setStartCol(value);
             }}
             value={startCol}
           />
@@ -100,8 +102,9 @@ const SheetImportItem = ({ sheetImport }: Props) => {
             onChange={(e) => {
               const value = e.target.value.toUpperCase();
               if (!validRow(value)) return;
-              setEndCol(value);
+              sheetImport.valid = false;
               sheetImport.sheet.headerEndCol = value;
+              setEndCol(value);
             }}
             value={endCol}
           />
