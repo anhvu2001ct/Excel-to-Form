@@ -26,14 +26,21 @@ function _ModalImport(props: Props) {
   );
 }
 function ModalImport({ onClose, file }: Props) {
-  const [_, rerender] = useState({});
   const [_wb, setWorkbookImport] = useWorkbookImport();
   const workbook = _wb()!;
+  const [loading, setLoading] = useState(false);
+
+  const handleClose = () => {
+    if (loading) toast.info("Please wait untill we are finish");
+    else onClose();
+  };
+
   useEffect(() => {
     async function fetchData() {
       const form = new FormData();
       form.append("file", file!);
       try {
+        setLoading(true);
         const response = await fetch(apiEndpoint("import", "workbook"), {
           method: "post",
           body: form,
@@ -41,7 +48,7 @@ function ModalImport({ onClose, file }: Props) {
         const result = await response.json();
         if (!response.ok) throw new Error(result.message);
         setWorkbookImport(result.message);
-        rerender({});
+        setLoading(false);
       } catch (error) {
         const _error = error as Error;
         toast.error(_error.message);
@@ -53,6 +60,7 @@ function ModalImport({ onClose, file }: Props) {
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
       const response = await fetch(apiEndpoint("import", "submit"), {
         method: "post",
         headers: {
@@ -68,6 +76,8 @@ function ModalImport({ onClose, file }: Props) {
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,7 +90,7 @@ function ModalImport({ onClose, file }: Props) {
       width={"max-content"}
       footer={null}
       visible={!!file}
-      onCancel={onClose}
+      onCancel={handleClose}
     >
       <div className="modal-container">
         <HeaderWorkbook workbook={_wb()?.workbook!} />
@@ -94,7 +104,7 @@ function ModalImport({ onClose, file }: Props) {
           <Button
             size="large"
             className="max-w-[120px] w-full"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Cancel
           </Button>
@@ -103,6 +113,7 @@ function ModalImport({ onClose, file }: Props) {
             size="large"
             className="max-w-[120px] w-full text-blue-500"
             onClick={onSubmit}
+            loading={loading}
           >
             Submit
           </Button>
