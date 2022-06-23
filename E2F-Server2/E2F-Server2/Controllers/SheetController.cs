@@ -39,7 +39,13 @@ namespace E2F_Server2.Controllers
         {
             try
             {
-                if (form.Count < 1) return BadRequest(new
+                int cnt = 0;
+                foreach (var item in form)
+                {
+                    if (item.Value.FirstOrDefault("").Trim() != "") ++cnt;
+                }
+
+                if (cnt == 0) return BadRequest(new
                 {
                     success = false,
                     message = "At least one input must be specified"
@@ -58,11 +64,14 @@ namespace E2F_Server2.Controllers
                 var rowId = await Program.Sql.ExecuteScalarAsync<int>(query, new { SheetId = sheetId });
 
                 query = SqlHelper.GetInsertQuery("SheetFields", "Value", "RowId", "ColumnId");
-                await Program.Sql.ExecuteAsync(query, columnIds.Select(cId => new
-                {
-                    Value = form.ContainsKey(cId) ? form[cId].First() : null,
-                    RowId = rowId,
-                    ColumnId = cId
+                await Program.Sql.ExecuteAsync(query, columnIds.Select(cId => {
+                    var value = form[cId].FirstOrDefault("").Trim();
+                    return new
+                    {
+                        Value = value == "" ? null : value,
+                        RowId = rowId,
+                        ColumnId = cId
+                    };
                 }));
 
                 return Ok(new
