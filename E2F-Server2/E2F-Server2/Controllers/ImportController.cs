@@ -145,6 +145,16 @@ namespace E2F_Server2.Controllers
             try
             {
                 var workbook = json.GetObject<WorkbookImport>();
+                
+                foreach (var sheet in workbook.Sheets)
+                {
+                    if (!sheet.Valid) return BadRequest(new
+                    {
+                        success = false,
+                        message = "All sheet(s) must be valid"
+                    });
+                }
+                
                 var query = SqlHelper.GetInsertIdQuery("Workbooks", "Id", "Name", "FileName", "Description");
                 workbook.Workbook.Id = await Program.Sql.ExecuteScalarAsync<int>(query, new
                 {
