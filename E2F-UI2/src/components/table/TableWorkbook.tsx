@@ -22,7 +22,8 @@ type Props = {
 };
 
 function compareStr(a: any, b: any) {
-  (a = a.toString().toLowerCase()), (b = b.toString().toLowerCase());
+  a = (a ?? "").toString().toLowerCase();
+  b = (b ?? "").toString().toLowerCase();
   if (a === b) return 0;
   return a < b ? -1 : 1;
 }
