@@ -1,4 +1,10 @@
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Form,
@@ -247,7 +253,7 @@ const TableWorkbook = ({ sheet }: Props) => {
                     });
                   }}
                 >
-                  Edit
+                  <EditOutlined />
                 </Button>
                 <Popconfirm
                   title="Are you sure want to delete this?"
@@ -265,14 +271,14 @@ const TableWorkbook = ({ sheet }: Props) => {
                       color: "red",
                     }}
                   >
-                    Delete
+                    <DeleteOutlined />
                   </Button>
                 </Popconfirm>
               </>
             ) : (
               <>
                 <Button type="link" onClick={() => updateRow(record.key)}>
-                  Save
+                  <CheckOutlined />
                 </Button>
                 <Button
                   type="link"
@@ -281,7 +287,7 @@ const TableWorkbook = ({ sheet }: Props) => {
                     setEditingRowId("");
                   }}
                 >
-                  Cancel
+                  <CloseOutlined />
                 </Button>
               </>
             )}

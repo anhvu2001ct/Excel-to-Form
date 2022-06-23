@@ -1,6 +1,6 @@
 import { Layout, Menu } from "antd";
 import { ChangeEvent, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import Logo from "../../data/img/logo-img.png";
 import InputFile from "../InputFile/InputFile";
 import { Modal } from "../modal/ModalImport";
@@ -30,13 +30,13 @@ const LayoutMain = () => {
           onCollapse={(value) => setCollapsed(value)}
           theme="light"
         >
-          <div className="logo mb-2 scale-75">
+          <Link to={"/"} className="logo mb-2 scale-75 block">
             <img
               srcSet={`${Logo} 2x`}
               className="w-full h-full object-cover"
               alt="Logo"
             />
-          </div>
+          </Link>
 
           <Menu
             defaultSelectedKeys={["1"]}
