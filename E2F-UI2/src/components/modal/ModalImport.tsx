@@ -31,7 +31,7 @@ function ModalImport({ onClose, file }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
-    if (loading) toast.info("Please wait untill we are finish");
+    if (loading) toast.info("Please wait until we are finish");
     else onClose();
   };
 
