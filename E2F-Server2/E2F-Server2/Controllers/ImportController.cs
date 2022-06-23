@@ -59,17 +59,23 @@ namespace E2F_Server2.Controllers
                 var fileName = data.GetProperty("fileName").GetString()!;
                 var sheetIndex = data.GetProperty("sheetIndex").GetInt16();
                 var rowIndex = data.GetProperty("headerStartRow").GetInt32();
-                var startCol = Util.SubMax(data.GetProperty("headerStartCol").GetString()!, 3).ToUpperInvariant();
-                var endCol = Util.SubMax(data.GetProperty("headerEndCol").GetString()!, 3).ToUpperInvariant();
-
-                int startColNum = SheetHelper.ColumnNameToNumber(startCol);
-                int endColNum = SheetHelper.ColumnNameToNumber(endCol);
+                var startCol = Util.SubMax(data.GetProperty("headerStartCol").GetString() ?? "", 3).ToUpperInvariant();
+                var endCol = Util.SubMax(data.GetProperty("headerEndCol").GetString() ?? "", 3).ToUpperInvariant();
 
                 if (rowIndex < 1) return BadRequest(new
                 {
                     success = false,
                     message = "Row index must be a positive integer"
                 });
+
+                if (startCol == "" || endCol == "") return BadRequest(new
+                {
+                    success = false,
+                    message = "Columns cannot be empty"
+                });
+
+                int startColNum = SheetHelper.ColumnNameToNumber(startCol);
+                int endColNum = SheetHelper.ColumnNameToNumber(endCol);
 
                 if (startColNum > endColNum)
                 {

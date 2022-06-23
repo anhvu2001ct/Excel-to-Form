@@ -1,4 +1,5 @@
 import { Button, Divider, Modal } from "antd";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import { toast } from "react-toastify";
@@ -72,7 +73,7 @@ function ModalImport({ onClose, file }: Props) {
 
   if (!workbook) return null;
 
-  return ReactDom.createPortal(
+  return (
     <Modal
       style={{ top: 10 }}
       title="Import workbook"
@@ -85,8 +86,8 @@ function ModalImport({ onClose, file }: Props) {
         <HeaderWorkbook workbook={_wb()?.workbook!} />
         <Divider orientation="left">Information of file</Divider>
         <div className="flex flex-col gap-5">
-          {workbook!.sheets.map((item, index) => (
-            <SheetImportItem key={index} index={index} />
+          {workbook!.sheets.map((item) => (
+            <SheetImportItem key={nanoid()} sheetImport={item} />
           ))}
         </div>
         <div className="btn-wrapper ">
@@ -107,8 +108,7 @@ function ModalImport({ onClose, file }: Props) {
           </Button>
         </div>
       </div>
-    </Modal>,
-    document.querySelector("body") as HTMLElement
+    </Modal>
   );
 }
 

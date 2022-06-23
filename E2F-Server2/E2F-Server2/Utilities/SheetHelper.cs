@@ -41,7 +41,7 @@ namespace E2F_Server2.Utilities
                 }
             };
 
-            if (sheet.Dimension.End.Row >= rowIndex)
+            if (sheet.Dimension != null && sheet.Dimension.End.Row >= rowIndex)
                 UpdateSheetImport(sheet, res, ColumnNameToNumber(startCol), ColumnNameToNumber(endCol));
 
             if (!res.Valid)
