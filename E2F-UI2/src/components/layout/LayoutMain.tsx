@@ -44,7 +44,7 @@ const LayoutMain = () => {
             className="flex justify-center flex-col gap-3"
           >
             <Menu.Item key="1">
-              <NavLink to={"/"} onClick={() => setCollapsed(!collapsed)}>
+              <NavLink to={"/"}>
                 <div className="flex items-center justify-between w-[150px]">
                   <i className="fal fa-home-lg"></i>
                   <span>Home</span>
