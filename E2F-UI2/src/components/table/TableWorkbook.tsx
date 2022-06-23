@@ -304,8 +304,12 @@ const TableWorkbook = ({ sheet }: Props) => {
         loading={data === undefined}
         columns={columns}
         dataSource={dataSource}
-        pagination={{ pageSize: 10 }}
-        scroll={{ x: "max-content", y: 500 }}
+        bordered
+        pagination={{
+          showSizeChanger: true,
+          showTotal: (total, range) => `${range[0]} - ${range[1]} of ${total}`,
+        }}
+        scroll={{ x: "max-content", y: 1000 }}
         onChange={(_1, _2, sorter: any) => {
           setSortedInfo(sorter);
           exportViewData.sorting = sorter.order
