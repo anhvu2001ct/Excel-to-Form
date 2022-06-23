@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Input, Select } from "antd";
+import { Button, Checkbox, Col, Form, Input, message, Select } from "antd";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import { Sheet } from "../../types/Sheet";
@@ -7,17 +7,16 @@ type Props = {
   sheet: Sheet;
 };
 const FormMain = ({ sheet }: Props) => {
-  console.log("FormMain ~ sheet", sheet);
   const [form] = Form.useForm();
   const [_, refreshData] = useSheetData();
   const onFinish = async (values: any) => {
+    console.log("onFinish ~ values", values);
     try {
       const formData = new FormData();
       Object.values(values).forEach((val, index) => {
-        formData.append(
-          sheet.columns[index].id.toString(),
-          val === undefined ? "" : (val as string)
-        );
+        if (val) {
+          formData.append(sheet.columns[index].id.toString(), val as string);
+        }
       });
 
       const response = await fetch(apiEndpoint("sheet/add", `${sheet.id}`), {
@@ -26,8 +25,9 @@ const FormMain = ({ sheet }: Props) => {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-      toast.success(result.message);
+      message.success(`Added a row to sheet ${sheet.name}`);
       refreshData();
+      form.resetFields();
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
@@ -63,17 +63,18 @@ const FormMain = ({ sheet }: Props) => {
             >
               {col.columnType === "select" ? (
                 <Select
+                  defaultValue={col.selectOptions![0]}
                   className="max-w-[300px]"
                   placeholder={`Enter yout ${col.name}`}
                 >
-                  {col.selectOptions?.map((select, idx) => (
-                    <Select.Option value={select} key={idx}>
-                      {select}
+                  {col.selectOptions?.map((option, idx) => (
+                    <Select.Option value={option} key={idx}>
+                      {option}
                     </Select.Option>
                   ))}
                 </Select>
               ) : (
-                <Input name={col.name} placeholder={`Enter yout ${col.name}`} />
+                <Input name={col.name} placeholder={`Enter your ${col.name}`} />
               )}
             </Form.Item>
           );

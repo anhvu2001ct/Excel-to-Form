@@ -8,7 +8,7 @@ const InputFile = ({ name, onChange, ...props }: Props) => {
     <>
       <label
         htmlFor={name}
-        className="flex items-center justify-between w-[150px]"
+        className="flex items-center justify-between w-[150px] cursor-pointer"
       >
         <i className="fal fa-file-import"></i>
         <span>Import</span>

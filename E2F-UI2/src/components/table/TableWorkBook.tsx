@@ -60,7 +60,7 @@ const TableWorkbook = ({ sheet }: Props) => {
       confirm,
       clearFilters,
     }: any) => (
-      <div style={{ padding: 8 }}>
+      <div style={{ padding: 5 }}>
         {col.columnType === "select" ? (
           createSelectComp(col.selectOptions!, {
             value: selectedKeys[0],
@@ -107,7 +107,6 @@ const TableWorkbook = ({ sheet }: Props) => {
               exportViewData.searchPatterns[col.id] = undefined;
             }}
             size="small"
-            style={{ width: 90 }}
           >
             Reset
           </Button>
@@ -233,10 +232,9 @@ const TableWorkbook = ({ sheet }: Props) => {
       title: "Actions",
       dataIndex: "action",
       fixed: "right",
-      width: 200,
       render: (_: any, record: any) => {
         return (
-          <div className="flex items-center gap-2 p-3">
+          <div className="flex items-center">
             {editingRowId !== record.key ? (
               <>
                 <Button

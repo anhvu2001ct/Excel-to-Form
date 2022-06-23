@@ -23,7 +23,8 @@ const LayoutMain = () => {
     <div className="container">
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
-          breakpoint="lg"
+          breakpoint="sm"
+          collapsedWidth="0"
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
@@ -43,7 +44,7 @@ const LayoutMain = () => {
             className="flex justify-center flex-col gap-3"
           >
             <Menu.Item key="1">
-              <NavLink to={"/"}>
+              <NavLink to={"/"} onClick={() => setCollapsed(!collapsed)}>
                 <div className="flex items-center justify-between w-[150px]">
                   <i className="fal fa-home-lg"></i>
                   <span>Home</span>

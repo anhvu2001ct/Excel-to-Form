@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 import { sheetEnpoint } from "../../fetchingAPI/fetchingApi";
+import useDebounce from "../../hooks/useDebounce";
 import { Sheet, SheetRow } from "../../types/Wordbook";
 import Input from "../common/search/Input";
 import Select from "../common/select/Select";
 import Separator from "../common/separator/Separator";
 import Table from "../common/table/Table";
 import Form from "../Form/Form";
+import Spinner from "../loading/Spinner";
 import { add } from "../notification/Notifications";
 
 type Props = {
@@ -17,6 +19,7 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
   const [active, setActive] = useState(false);
   const [sheetData, setSheetData] = useState<SheetRow[]>();
   const searchDataRef = useRef<[string, string]>(["", ""]);
+  const [searchPending, setSearchPending] = useState(false);
   let searchData = searchDataRef.current;
 
   const updateData = async () => {
@@ -51,10 +54,17 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
     });
   };
 
+  const setSearch = useDebounce((pending, value) => {
+    setSearchPending(pending);
+    if (pending === false) {
+      searchDataRef.current = value;
+      searchData = value;
+      updateData();
+    }
+  });
+
   const handleSearchData = (pattern: string, column: string) => {
-    searchDataRef.current = [pattern, column];
-    searchData = searchDataRef.current;
-    updateData();
+    setSearch([pattern, column]);
   };
 
   return (
@@ -66,6 +76,11 @@ export default function SheetDetail({ sheet, index, workbookId }: Props) {
       <div className={`sheet-main ${active ? "active" : ""}`}>
         <div className="sheet-main-content">
           <div className="sheet-detail-search">
+            {searchPending && (
+              <div className="sheet-search-spinner">
+                <Spinner />
+              </div>
+            )}
             <Input
               placeholder="Search by content..."
               onSearch={(str) => handleSearchData(str, searchData[1])}

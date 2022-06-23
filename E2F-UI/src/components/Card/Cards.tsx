@@ -7,6 +7,7 @@ import { workbookEnpoint } from "../../fetchingAPI/fetchingApi";
 import { add } from "../notification/Notifications";
 import useDebounceState from "../../hooks/useDebounceState";
 import Spinner from "../loading/Spinner";
+import useEffectOnce from "../../hooks/useEffectOnce";
 type Props = {
   search: string;
 };
@@ -50,26 +51,29 @@ export default function Cards({ search }: Props) {
     loadWorkbook();
   };
 
-  useEffect(() => {
+  useEffectOnce(() => {
     loadWorkbook();
     modalEvent.subscribe(loadWorkbook);
     return () => {
       modalEvent.unSubscribe(loadWorkbook);
     };
-  }, []);
+  });
 
   return (
     <div className="card-container">
-      {pending && (
+      {pending ? (
         <div className="card-spinner">
           <Spinner className="spinner-center" size="40px" borderSize="4px" />
         </div>
+      ) : (
+        <CardContext.Provider value={{ reload: loadWorkbook }}>
+          {workbooks.map((item) => {
+            return (
+              <CardItem key={item.id} {...item} onDelete={deleteWorkbook} />
+            );
+          })}
+        </CardContext.Provider>
       )}
-      <CardContext.Provider value={{ reload: loadWorkbook }}>
-        {workbooks.map((item) => {
-          return <CardItem key={item.id} {...item} onDelete={deleteWorkbook} />;
-        })}
-      </CardContext.Provider>
     </div>
   );
 }

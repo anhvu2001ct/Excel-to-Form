@@ -117,7 +117,7 @@ const WorkbookDetailPage = () => {
       </Breadcrumb>
       {workbookSheets && (
         <>
-          <div className="flex items-center gap-2 justify-end">
+          <div className="btn-container flex items-center gap-2 justify-end ">
             <Button
               type="primary"
               className="text-blue-500"

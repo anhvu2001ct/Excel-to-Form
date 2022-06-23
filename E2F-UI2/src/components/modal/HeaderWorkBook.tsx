@@ -11,8 +11,8 @@ export default function HeaderWorkBook({ workbook, disable = false }: Props) {
   const [title, setTitle] = useState(workbook.name);
   const [description, setDescription] = useState(workbook.description || "");
   return (
-    <div className="flex gap-5 max-h-[150px]">
-      <div className="w-1/4 object-cover rounded-md">
+    <div className="flex gap-5 flex-col md:flex-row">
+      <div className="w-full md:max-h-[250px] md:max-w-[250px] object-cover rounded-md">
         <img
           src={workbook.url || DefaultImage}
           alt="hinh"
@@ -21,7 +21,7 @@ export default function HeaderWorkBook({ workbook, disable = false }: Props) {
       </div>
       <div className=" flex flex-col gap-3 flex-grow">
         <div
-          className={`header-top-title font-bold flex-shrink transition-all ${
+          className={`header-top-title font-bold flex-shrink w-full md:max-w-[200px] transition-all ${
             title?.length < 1 ? "error" : ""
           }`}
         >
