@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Input, Select } from "antd";
+import { Button, Checkbox, Col, Form, Input, message, Select } from "antd";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import { Sheet } from "../../types/Sheet";
@@ -25,7 +25,7 @@ const FormMain = ({ sheet }: Props) => {
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-      toast.success(result.message);
+      message.success(`Added a row to sheet ${sheet.name}`);
       refreshData();
       form.resetFields();
     } catch (_error) {
@@ -67,9 +67,9 @@ const FormMain = ({ sheet }: Props) => {
                   className="max-w-[300px]"
                   placeholder={`Enter yout ${col.name}`}
                 >
-                  {col.selectOptions?.map((select, idx) => (
-                    <Select.Option value={select} key={idx}>
-                      {select}
+                  {col.selectOptions?.map((option, idx) => (
+                    <Select.Option value={option} key={idx}>
+                      {option}
                     </Select.Option>
                   ))}
                 </Select>
