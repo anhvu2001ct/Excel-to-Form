@@ -124,7 +124,7 @@ const TableWorkbook = ({ sheet }: Props) => {
     onFilter: (value: string, record: any) => {
       if (col.columnType === "select")
         return record[col.id].toString() === value;
-      return record[col.id]
+      return (record[col.id] ?? "")
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase());

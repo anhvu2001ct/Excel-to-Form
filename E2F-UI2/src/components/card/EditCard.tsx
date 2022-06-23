@@ -1,6 +1,6 @@
 import { Button, message, Modal } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../../API/endpoint";
 import DefaultImage from "../../data/img/default-img.webp";
@@ -10,7 +10,7 @@ import "./EditCard.scss";
 type Props = {
   workbook: Workbook;
   visible: boolean;
-  onClose: () => void;
+  onClose: (update: boolean) => void;
 };
 
 const EditCard = ({ workbook, visible, onClose }: Props) => {
@@ -19,18 +19,19 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
   const [description, setDescription] = useState(workbook.description);
   const imgRef = useRef<HTMLImageElement>(null);
   const fileRef = useRef<File>();
+  const imgId = useId();
 
   const updateData = async () => {
     try {
-      setWaiting(true);
       if (!title) {
         toast.error("Title cannot empty!");
         return;
       }
 
+      setWaiting(true);
       const formData = new FormData();
       formData.append("name", title);
-      formData.append("description", description!);
+      formData.append("description", description ?? "");
       if (fileRef.current) formData.append("image", fileRef.current);
 
       const response = await fetch(
@@ -42,7 +43,7 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
       );
 
       if (!response.ok) throw new Error((await response.json()).message);
-      onClose();
+      onClose(true);
       message.info("Edited workbook");
     } catch (_error) {
       const error = _error as Error;
@@ -51,24 +52,26 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
       setWaiting(false);
     }
   };
+
   const changeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       fileRef.current = e.target.files[0];
       imgRef.current!.src = URL.createObjectURL(fileRef.current);
+      console.log(imgRef.current?.src);
     }
   };
+
   return (
     <Modal
       title="Edit workbook"
       visible={visible}
-      confirmLoading={waiting}
-      onCancel={onClose}
+      onCancel={() => onClose(false)}
       width={800}
       footer={[
         <Button
           key="submit"
           type="primary"
-          onClick={onClose}
+          onClick={() => onClose(false)}
           className="text-blue-500"
         >
           Cancel
@@ -78,6 +81,7 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
           type="primary"
           onClick={updateData}
           className="bg-blue-500"
+          loading={waiting}
         >
           Submit
         </Button>,
@@ -86,7 +90,7 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
       <div className="flex gap-5 max-h-[150px]">
         <div className="w-1/4 object-cover rounded-md relative">
           <label
-            htmlFor="edit-image"
+            htmlFor={imgId}
             className="rounded-md flex items-center justify-center absolute inset-0 z-[2] cursor-pointer transition-all group hover:bg-black/[.2]"
           >
             <i
@@ -97,13 +101,12 @@ const EditCard = ({ workbook, visible, onClose }: Props) => {
           </label>
           <input
             type="file"
-            name="edit-image"
             accept="image/*"
-            id="edit-image"
+            id={imgId}
             className="hidden"
             onChange={changeImage}
           />
-          
+
           <img
             ref={imgRef}
             src={workbook.url || DefaultImage}

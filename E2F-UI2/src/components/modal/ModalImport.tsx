@@ -1,4 +1,5 @@
 import { Button, Divider, Modal } from "antd";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import { toast } from "react-toastify";
@@ -8,7 +9,7 @@ import {
   WorkbookImportProvider,
 } from "../../context/workbookImport-context";
 import EventEmiiter from "../../lib/EventEmitter";
-import HeaderWorkbook from "./HeaderWorkBook";
+import HeaderWorkbook from "./HeaderWorkbook";
 import "./Modal.scss";
 import SheetImportItem from "./SheetImportItem";
 type Props = {
@@ -25,14 +26,21 @@ function _ModalImport(props: Props) {
   );
 }
 function ModalImport({ onClose, file }: Props) {
-  const [_, rerender] = useState({});
   const [_wb, setWorkbookImport] = useWorkbookImport();
   const workbook = _wb()!;
+  const [loading, setLoading] = useState(false);
+
+  const handleClose = () => {
+    if (loading) toast.info("Please wait until we are finish");
+    else onClose();
+  };
+
   useEffect(() => {
     async function fetchData() {
       const form = new FormData();
       form.append("file", file!);
       try {
+        setLoading(true);
         const response = await fetch(apiEndpoint("import", "workbook"), {
           method: "post",
           body: form,
@@ -40,7 +48,7 @@ function ModalImport({ onClose, file }: Props) {
         const result = await response.json();
         if (!response.ok) throw new Error(result.message);
         setWorkbookImport(result.message);
-        rerender({});
+        setLoading(false);
       } catch (error) {
         const _error = error as Error;
         toast.error(_error.message);
@@ -52,6 +60,7 @@ function ModalImport({ onClose, file }: Props) {
 
   const onSubmit = async () => {
     try {
+      setLoading(true);
       const response = await fetch(apiEndpoint("import", "submit"), {
         method: "post",
         headers: {
@@ -67,26 +76,28 @@ function ModalImport({ onClose, file }: Props) {
     } catch (_error) {
       const error = _error as Error;
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   if (!workbook) return null;
 
-  return ReactDom.createPortal(
+  return (
     <Modal
       style={{ top: 10 }}
       title="Import workbook"
       width={"max-content"}
       footer={null}
       visible={!!file}
-      onCancel={onClose}
+      onCancel={handleClose}
     >
       <div className="modal-container">
         <HeaderWorkbook workbook={_wb()?.workbook!} />
         <Divider orientation="left">Information of file</Divider>
         <div className="flex flex-col gap-5">
-          {workbook!.sheets.map((item, index) => (
-            <SheetImportItem key={index} index={index} />
+          {workbook!.sheets.map((item) => (
+            <SheetImportItem key={nanoid()} sheetImport={item} />
           ))}
         </div>
         
@@ -94,7 +105,7 @@ function ModalImport({ onClose, file }: Props) {
           <Button
             size="large"
             className="max-w-[120px] w-full"
-            onClick={onClose}
+            onClick={handleClose}
           >
             Cancel
           </Button>
@@ -103,13 +114,13 @@ function ModalImport({ onClose, file }: Props) {
             size="large"
             className="max-w-[120px] w-full text-blue-500"
             onClick={onSubmit}
+            loading={loading}
           >
             Submit
           </Button>
         </div>
       </div>
-    </Modal>,
-    document.querySelector("body") as HTMLElement
+    </Modal>
   );
 }
 

@@ -2,12 +2,12 @@ import TextArea from "antd/lib/input/TextArea";
 import { useState } from "react";
 import DefaultImage from "../../data/img/default-img.webp";
 import { Workbook } from "../../types/Workbook";
-import "./HeaderWorkBook.scss";
+import "./HeaderWorkbook.scss";
 type Props = {
   workbook: Workbook;
   disable?: boolean;
 };
-export default function HeaderWorkBook({ workbook, disable = false }: Props) {
+export default function HeaderWorkbook({ workbook, disable = false }: Props) {
   const [title, setTitle] = useState(workbook.name);
   const [description, setDescription] = useState(workbook.description || "");
   return (

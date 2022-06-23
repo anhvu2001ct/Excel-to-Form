@@ -38,10 +38,11 @@ const CardItem = ({ data }: Props) => {
     }
   };
 
-  const onCloseEdit = () => {
+  const onCloseEdit = (update: boolean) => {
     setEditVisible(false);
-    cardsRefresh();
+    update && cardsRefresh();
   };
+
   const handleDetail = () => {
     navigate(`/workbook/${data.id}`);
   };
@@ -86,7 +87,7 @@ const CardItem = ({ data }: Props) => {
             </div>
           </div>
         }
-        description={<p className="line-clamp-3">{data.description || ""}</p>}
+        description={<p className="line-clamp-3">{data.description ?? ""}</p>}
       />
       <EditCard workbook={data} visible={editVisible} onClose={onCloseEdit} />
     </Card>

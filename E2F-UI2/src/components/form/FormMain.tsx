@@ -53,6 +53,9 @@ const FormMain = ({ sheet }: Props) => {
             <Form.Item
               name={col.name}
               label={col.name}
+              initialValue={
+                col.selectOptions ? col.selectOptions[0] : undefined
+              }
               rules={[
                 {
                   required: col.isRequired,
@@ -63,7 +66,6 @@ const FormMain = ({ sheet }: Props) => {
             >
               {col.columnType === "select" ? (
                 <Select
-                  defaultValue={col.selectOptions![0]}
                   className="max-w-[300px]"
                   placeholder={`Enter yout ${col.name}`}
                 >
@@ -74,7 +76,11 @@ const FormMain = ({ sheet }: Props) => {
                   ))}
                 </Select>
               ) : (
-                <Input name={col.name} placeholder={`Enter your ${col.name}`} />
+                <Input
+                  allowClear
+                  name={col.name}
+                  placeholder={`Enter your ${col.name}`}
+                />
               )}
             </Form.Item>
           );

@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { apiEndpoint } from "../API/endpoint";
 import ExportViewModal from "../components/modal/ExportViewModal";
-import HeaderWorkBook from "../components/modal/HeaderWorkBook";
+import HeaderWorkbook from "../components/modal/HeaderWorkbook";
 import SheetDetail from "../components/sheet/SheetDetail";
 import {
   useWorkbookSheets,
@@ -151,7 +151,7 @@ const WorkbookDetailPage = () => {
             </Button>
           </div>
           <div className="w-full mt-3">
-            <HeaderWorkBook workbook={workbookSheets.workbook} disable={true} />
+            <HeaderWorkbook workbook={workbookSheets.workbook} disable={true} />
             <Divider orientation="left" className="py-4">
               List of sheet
             </Divider>

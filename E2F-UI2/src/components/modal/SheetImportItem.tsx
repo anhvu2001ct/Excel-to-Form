@@ -6,7 +6,7 @@ import { SheetImport } from "../../types/SheetImport";
 import { toast } from "react-toastify";
 import "./SheetImportItem.scss";
 type Props = {
-  index: number;
+  sheetImport: SheetImport;
 };
 
 function validRow(value: string) {
@@ -14,10 +14,9 @@ function validRow(value: string) {
   return true;
 }
 
-const SheetImportItem = ({ index }: Props) => {
+const SheetImportItem = ({ sheetImport }: Props) => {
   const [workbookImport] = useWorkbookImport();
   const workbook = workbookImport()!.workbook;
-  const sheetImport = workbookImport()!.sheets[index];
 
   const [startRow, setStartRow] = useState(sheetImport.sheet.headerStartRow);
   const [startCol, setStartCol] = useState(sheetImport.sheet.headerStartCol);
@@ -77,8 +76,9 @@ const SheetImportItem = ({ index }: Props) => {
             placeholder="Enter start row"
             min={1}
             onChange={(value) => {
+              (sheetImport.valid = false),
+                (sheetImport.sheet.headerStartRow = value);
               setStartRow(value);
-              sheetImport.sheet.headerStartRow = value;
             }}
             value={startRow}
           />
@@ -89,8 +89,9 @@ const SheetImportItem = ({ index }: Props) => {
             onChange={(e) => {
               const value = e.target.value.toUpperCase();
               if (!validRow(value)) return;
-              setStartCol(value);
+              sheetImport.valid = false;
               sheetImport.sheet.headerStartCol = value;
+              setStartCol(value);
             }}
             value={startCol}
           />
@@ -101,8 +102,9 @@ const SheetImportItem = ({ index }: Props) => {
             onChange={(e) => {
               const value = e.target.value.toUpperCase();
               if (!validRow(value)) return;
-              setEndCol(value);
+              sheetImport.valid = false;
               sheetImport.sheet.headerEndCol = value;
+              setEndCol(value);
             }}
             value={endCol}
           />
