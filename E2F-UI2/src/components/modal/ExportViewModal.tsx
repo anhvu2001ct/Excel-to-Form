@@ -54,7 +54,6 @@ export default function ExportViewModal({
       title="Export current view data"
       visible={visible}
       confirmLoading={loading}
-      onOk={handleOk}
       onCancel={onCancel}
       footer={[
         <Button
@@ -68,6 +67,7 @@ export default function ExportViewModal({
         <Button
           key="link"
           type="primary"
+          loading={loading}
           onClick={handleOk}
           className="bg-blue-500"
         >
