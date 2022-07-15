@@ -76,7 +76,7 @@ const SheetImportItem = ({ sheetImport }: Props) => {
           )}
         </Form.Item>
       </div>
-      <div className="flex-1 flex items-center md:gap-4 gap-2">
+      <div className="flex-1 flex items-center md:gap-4 gap-2 modal-input-list">
         <Form.Item label="Start Row" required>
           {sheetImport ? (
             <InputNumber
@@ -90,7 +90,7 @@ const SheetImportItem = ({ sheetImport }: Props) => {
               value={startRow}
             />
           ) : (
-            <Skeleton.Input active={true} size="small" />
+            <Skeleton.Input active={true} size="default" />
           )}
         </Form.Item>
         <Form.Item label="Start Column" required>

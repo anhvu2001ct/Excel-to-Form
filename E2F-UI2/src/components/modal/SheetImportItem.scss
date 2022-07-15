@@ -11,4 +11,9 @@
       font-size: 12px;
     }
   }
+  .modal-input-list {
+    span.ant-skeleton-input {
+      @apply w-full min-w-[90px];
+    }
+  }
 }
