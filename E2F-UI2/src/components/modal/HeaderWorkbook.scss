@@ -8,3 +8,9 @@
     }
   }
 }
+
+.modal-image {
+  .ant-skeleton-avatar.ant-skeleton-avatar-square {
+    @apply w-full h-[200px] md:h-full;
+  }
+}

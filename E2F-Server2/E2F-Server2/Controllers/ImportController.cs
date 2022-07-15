@@ -145,7 +145,15 @@ namespace E2F_Server2.Controllers
             try
             {
                 var workbook = json.GetObject<WorkbookImport>();
-                
+
+                Console.WriteLine(workbook.Workbook.Name);
+
+                if (string.IsNullOrEmpty(workbook.Workbook.Name)) return BadRequest(new
+                {
+                    success = false,
+                    message = "Title cannot empty"
+                });
+
                 foreach (var sheet in workbook.Sheets)
                 {
                     if (!sheet.Valid) return BadRequest(new

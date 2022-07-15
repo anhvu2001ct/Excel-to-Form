@@ -3,13 +3,15 @@ import { WorkbookImport } from "../types/WorkbookImport";
 
 type WorkbookContextType = [
   () => WorkbookImport | undefined,
-  (wb: WorkbookImport) => void
-]
+  (wb: WorkbookImport | undefined) => void
+];
 
-const workbookImportContext = createContext<WorkbookContextType>(undefined as any);
+const workbookImportContext = createContext<WorkbookContextType>(
+  undefined as any
+);
 function WorkbookImportProvider(props: any) {
   const value = useRef<WorkbookImport>();
-  const setValue = (wb: WorkbookImport) => (value.current = wb);
+  const setValue = (wb: WorkbookImport | undefined) => (value.current = wb);
   return (
     <workbookImportContext.Provider
       value={[() => value.current, setValue]}

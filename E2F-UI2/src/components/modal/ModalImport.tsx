@@ -1,4 +1,4 @@
-import { Button, Divider, Modal } from "antd";
+import { Alert, Button, Divider, Modal, Skeleton, Space, Spin } from "antd";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import ReactDom from "react-dom";
@@ -25,6 +25,7 @@ function _ModalImport(props: Props) {
     </WorkbookImportProvider>
   );
 }
+
 function ModalImport({ onClose, file }: Props) {
   const [_wb, setWorkbookImport] = useWorkbookImport();
   const workbook = _wb()!;
@@ -32,7 +33,10 @@ function ModalImport({ onClose, file }: Props) {
 
   const handleClose = () => {
     if (loading) toast.info("Please wait until we are finish");
-    else onClose();
+    else {
+      setWorkbookImport(undefined);
+      onClose();
+    }
   };
 
   useEffect(() => {
@@ -81,7 +85,7 @@ function ModalImport({ onClose, file }: Props) {
     }
   };
 
-  if (!workbook) return null;
+  console.log(_wb());
 
   return (
     <Modal
@@ -90,18 +94,26 @@ function ModalImport({ onClose, file }: Props) {
       width={"max-content"}
       footer={null}
       visible={!!file}
-      onCancel={handleClose}
+      closable={false}
     >
       <div className="modal-container">
-        <HeaderWorkbook workbook={_wb()?.workbook!} />
+        <HeaderWorkbook workbook={_wb()?.workbook} />
         <Divider orientation="left">Information of file</Divider>
         <div className="flex flex-col gap-5">
-          {workbook!.sheets.map((item) => (
-            <SheetImportItem key={nanoid()} sheetImport={item} />
-          ))}
+          {workbook &&
+            workbook.sheets.map((item) => (
+              <SheetImportItem key={nanoid()} sheetImport={item} />
+            ))}
+
+          {!workbook && (
+            <>
+              <SheetImportItem key={nanoid()} sheetImport={undefined} />
+              <SheetImportItem key={nanoid()} sheetImport={undefined} />
+            </>
+          )}
         </div>
-        
-        <div className="btn-wrapper ">
+
+        <div className="btn-wrapper">
           <Button
             size="large"
             className="max-w-[120px] w-full"
